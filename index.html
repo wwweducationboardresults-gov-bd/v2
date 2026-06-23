@@ -169,6 +169,40 @@
             #page-wrapper { padding: 0px 50px !important; }
             #main-header2 { margin-top: 15px !important; }
         }
+
+        /* CAPTCHA status message style */
+        .captcha-status {
+            padding: 8px 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none;
+            font-size: 13px;
+        }
+        .captcha-status.success {
+            display: block;
+            background-color: #337AB7;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .captcha-status.error {
+            display: block;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .captcha-status.warning {
+            display: block;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .captcha-status.info {
+            display: block;
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
     </style>
 </head>
 <body>
@@ -242,6 +276,25 @@
                                             </div>
                                         </div>
                                         
+                                        <div class="row" id="col_4">
+                                            <div id="row_captcha">
+                                                <div class="form-group col-md-7 vcenter">
+                                                    <label for="captcha">Robot Prevention Technique (CAPTCHA) &nbsp; 
+                                                        <img id="captcha_img" src="" alt="Loading CAPTCHA...">&nbsp;
+                                                        <button id="captcha_reload" type="button" class="btn btn-md btn-danger"> 
+                                                            <span class="glyphicon glyphicon-refresh"></span>&nbsp;Click to load another image
+                                                        </button>
+                                                    </label>
+                                                </div>
+                                                <div class="form-group col-md-5 vcenter">
+                                                    <input class="form-control" type="text" name="captcha" value="" 
+                                                           placeholder="Type the digits visible on the image" 
+                                                           id="captcha" required="" autocomplete="off" maxlength="10">
+                                                    <div id="captcha_status" class="captcha-status"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <div class="row" id="col_5">
                                             <div id="row_submit">
                                                 <div class="form-group">
@@ -249,17 +302,16 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <style>
-    .center-wrapper {
-        text-align: center;
-    }
-    .center-wrapper input {
-      font-size: 1.5rem;
-    }
-</style>
-
-<div class="center-wrapper">
-    <input class="btn btn-success btn-lg" type="submit" name="submit" id="submit" value="View Document Info">
-</div>
+                                                        .center-wrapper {
+                                                            text-align: center;
+                                                        }
+                                                        .center-wrapper input {
+                                                            font-size: 1.5rem;
+                                                        }
+                                                    </style>
+                                                    <div class="center-wrapper">
+                                                        <input class="btn btn-success btn-lg" type="submit" name="submit" id="submit" value="View Document Info">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -290,190 +342,407 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.35.4/js/bootstrap-dialog.min.js"></script>
 
     <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCpyBQCI209BkMyg-pB2Zy0AJqSADZlApQ",
-            authDomain: "board-result-dhaka.firebaseapp.com",
-            projectId: "board-result-dhaka",
-            storageBucket: "board-result-dhaka.firebasestorage.app",
-            messagingSenderId: "735668089933",
-            appId: "1:735668089933:web:bc504d3f8fc46bbdc71804"
-        };
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpyBQCI209BkMyg-pB2Zy0AJqSADZlApQ",
+        authDomain: "board-result-dhaka.firebaseapp.com",
+        projectId: "board-result-dhaka",
+        storageBucket: "board-result-dhaka.firebasestorage.app",
+        messagingSenderId: "735668089933",
+        appId: "1:735668089933:web:bc504d3f8fc46bbdc71804"
+    };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-        $(document).ready(function() {
-            // Check for certificate ID in URL (from QR code scan)
+    // =============================================
+    // CAPTCHA SYSTEM
+    // =============================================
+    let currentCaptcha = null;
+    let isCaptchaVerified = false;
+    let captchaAttempts = 0;
+    const MAX_CAPTCHA_ATTEMPTS = 3;
+
+    // DOM elements
+    const captchaImg = document.getElementById('captcha_img');
+    const captchaInput = document.getElementById('captcha');
+    const captchaReloadBtn = document.getElementById('captcha_reload');
+    const captchaStatus = document.getElementById('captcha_status');
+    const submitBtn = document.getElementById('submit');
+
+    // Load CAPTCHA from Firestore
+    async function loadCaptcha() {
+        try {
+            // Show loading state
+            captchaImg.src = '';
+            captchaImg.alt = 'Loading CAPTCHA...';
+            clearCaptchaStatus();
+            
+            // Get all active CAPTCHAs
+            const snapshot = await db.collection('captchas')
+                .where('isActive', '==', true)
+                .get();
+            
+            const captchas = [];
+            snapshot.forEach(doc => {
+                captchas.push({ id: doc.id, ...doc.data() });
+            });
+            
+            if (captchas.length === 0) {
+                
+                captchaImg.alt = 'No CAPTCHA available';
+                return;
+            }
+            
+            // Pick random one
+            const random = captchas[Math.floor(Math.random() * captchas.length)];
+            currentCaptcha = random;
+            
+            // Display image with timestamp to prevent caching
+            captchaImg.src = random.imageUrl + '?t=' + new Date().getTime();
+            captchaImg.alt = 'CAPTCHA Image';
+            
+            // Reset all states
+            captchaInput.value = '';
+            captchaInput.disabled = false;
+            captchaInput.style.borderColor = '';
+            isCaptchaVerified = false;
+            captchaAttempts = 0;
+            submitBtn.disabled = false;
+            clearCaptchaStatus();
+            
+            // Update usage count
+            try {
+                await db.collection('captchas').doc(random.id).update({
+                    usageCount: firebase.firestore.FieldValue.increment(1)
+                });
+            } catch (e) {
+                // Ignore update errors
+            }
+            
+            console.log('CAPTCHA loaded:', random.id, 'Code:', random.secretCode);
+            
+            
+            
+            // Focus on input
+            setTimeout(() => {
+                captchaInput.focus();
+            }, 100);
+            
+        } catch (error) {
+            console.error('Error loading CAPTCHA:', error);
+            
+            captchaImg.alt = 'Error loading CAPTCHA';
+        }
+    }
+
+    // Verify CAPTCHA
+    function verifyCaptcha() {
+        const userInput = captchaInput.value.trim().toUpperCase();
+        
+        if (!currentCaptcha) {
+            
+            loadCaptcha();
+            return;
+        }
+        
+        if (!userInput) {
+            
+            captchaInput.focus();
+            return;
+        }
+        
+        captchaAttempts++;
+        
+        if (userInput === currentCaptcha.secretCode.toUpperCase()) {
+            // SUCCESS!
+            isCaptchaVerified = true;
+            
+            captchaInput.disabled = true;
+            
+            console.log('✅ CAPTCHA Verified! Image:', currentCaptcha.id);
+            
+
+            
+        } else {
+            // FAILED!
+            
+            const remaining = MAX_CAPTCHA_ATTEMPTS - captchaAttempts;
+            
+            if (remaining > 0) {
+                
+                captchaInput.value = '';
+                setTimeout(() => {
+                    captchaInput.focus();
+                }, 100);
+            } else {
+                
+                captchaInput.disabled = true;
+                setTimeout(() => {
+                    captchaInput.style.backgroundColor = '';
+                    captchaInput.style.borderColor = '';
+                    loadCaptcha();
+                }, 1500);
+            }
+        }
+    }
+
+    // Show status message
+    function showCaptchaStatus(message, type) {
+        if (!captchaStatus) return;
+        
+        captchaStatus.textContent = message;
+        captchaStatus.className = 'captcha-status ' + type;
+        captchaStatus.style.display = 'block';
+        
+        // Auto-hide info messages after 5 seconds
+        if (type === 'info') {
+            setTimeout(() => {
+                if (captchaStatus.className.includes('info')) {
+                    captchaStatus.style.display = 'none';
+                }
+            }, 5000);
+        }
+    }
+
+    // Clear status
+    function clearCaptchaStatus() {
+        if (!captchaStatus) return;
+        captchaStatus.style.display = 'none';
+        captchaStatus.className = 'captcha-status';
+        captchaStatus.textContent = '';
+    }
+
+    // =============================================
+    // MAIN APPLICATION
+    // =============================================
+    $(document).ready(function() {
+        // Load initial CAPTCHA
+        loadCaptcha();
+        
+        // CAPTCHA reload button
+        $('#captcha_reload').on('click', function() {
+            captchaInput.style.backgroundColor = '';
+            captchaInput.style.borderColor = '';
+            captchaInput.value = '';
+            captchaInput.disabled = false;
+            isCaptchaVerified = false;
+            clearCaptchaStatus();
+            loadCaptcha();
+        });
+        
+        // CAPTCHA input - Real-time verification as user types
+        $('#captcha').on('input', function() {
+            const userInput = $(this).val().trim();
+            
+            // Clear error styling when user starts typing
+            if (userInput.length > 0) {
+                captchaInput.style.borderColor = '';
+                captchaInput.style.backgroundColor = '';
+                clearCaptchaStatus();
+                isCaptchaVerified = false;
+            }
+            
+            // Auto-verify when input length matches expected code length
+            if (currentCaptcha && userInput.length === currentCaptcha.secretCode.length) {
+                verifyCaptcha();
+            }
+        });
+        
+        // CAPTCHA input - Enter key to verify manually
+        $('#captcha').on('keyup', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                verifyCaptcha();
+            }
+        });
+        
+        // Check for certificate ID in URL (from QR code scan)
+        const urlParams = new URLSearchParams(window.location.search);
+        const certId = urlParams.get('cert');
+        if (certId) {
+            $('#k').val(certId);
+        }
+
+        // Form submission
+        $('#form').on('submit', function(e) {
+            e.preventDefault();
+            
+            // Check if CAPTCHA is verified
+            if (!isCaptchaVerified) {
+                BootstrapDialog.alert({
+                    title: 'Message from Server',
+                    message: 'ERROR: You need to provide a valid Security Key / CAPTCHA. Please check and try again.',
+                    type: BootstrapDialog.TYPE_PRIMARY
+                });
+                captchaInput.focus();
+                return;
+            }
+            
+            const certificateId = $('#k').val().trim();
+            if (certificateId) {
+                const newUrl = window.location.pathname + '?cert=' + encodeURIComponent(certificateId);
+                window.history.pushState({ certId: certificateId }, '', newUrl);
+                fetchAndDisplayCertificate(certificateId);
+                
+                // Reset CAPTCHA after search
+                setTimeout(() => {
+                    captchaInput.style.backgroundColor = '';
+                    captchaInput.style.borderColor = '';
+                    loadCaptcha();
+                }, 1500);
+            } else {
+                BootstrapDialog.alert({
+                    title: 'Error',
+                    message: 'Please enter a Certificate ID',
+                    type: BootstrapDialog.TYPE_WARNING
+                });
+            }
+        });
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
             const urlParams = new URLSearchParams(window.location.search);
             const certId = urlParams.get('cert');
             if (certId) {
                 $('#k').val(certId);
-
+                fetchAndDisplayCertificate(certId);
+            } else {
+                $('#result_display').empty().hide();
+                $('#searchPanel').show();
+                loadCaptcha();
             }
-
-            // Form submission
-            $('#form').on('submit', function(e) {
-                e.preventDefault();
-                const certificateId = $('#k').val().trim();
-                if (certificateId) {
-                    // Update URL without page reload
-                    const newUrl = window.location.pathname + '?cert=' + encodeURIComponent(certificateId);
-                    window.history.pushState({ certId: certificateId }, '', newUrl);
-                    fetchAndDisplayCertificate(certificateId);
-                } else {
-                    BootstrapDialog.alert({
-                        title: 'Error',
-                        message: 'Please enter a Certificate ID',
-                        type: BootstrapDialog.TYPE_WARNING
-                    });
-                }
-            });
-
-            // Handle browser back/forward buttons
-            window.addEventListener('popstate', function(event) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const certId = urlParams.get('cert');
-                if (certId) {
-                    $('#k').val(certId);
-                    fetchAndDisplayCertificate(certId);
-                } else {
-                    // Show search panel again
-                    $('#result_display').empty().hide();
-                    $('#searchPanel').show();
-                }
-            });
         });
+    });
 
-        function fetchAndDisplayCertificate(certificateId) {
-            showLoading();
-            
-            db.collection("certificates").doc(certificateId).get()
-                .then((doc) => {
-                    hideLoading();
-                    if (doc.exists) {
-                        const data = doc.data();
-                        displayCertificateResult(data);
-                    } else {
-                        // Show search panel again
-                        $('#result_display').empty().hide();
-                        $('#searchPanel').show();
-                        
-                        BootstrapDialog.alert({
-                            title: 'Certificate Not Found',
-                            message: 'The certificate ID you entered was not found in our database. Please check the ID and try again.',
-                            type: BootstrapDialog.TYPE_DANGER
-                        });
-                    }
-                })
-                .catch((error) => {
-                    hideLoading();
-                    console.error("Error fetching certificate:", error);
+    function fetchAndDisplayCertificate(certificateId) {
+        showLoading();
+        
+        db.collection("certificates").doc(certificateId).get()
+            .then((doc) => {
+                hideLoading();
+                if (doc.exists) {
+                    const data = doc.data();
+                    displayCertificateResult(data);
+                } else {
                     $('#result_display').empty().hide();
                     $('#searchPanel').show();
                     
                     BootstrapDialog.alert({
-                        title: 'Error',
-                        message: 'An error occurred while fetching the certificate. Please try again later.',
+                        title: 'Certificate Not Found',
+                        message: 'The certificate ID you entered was not found in our database. Please check the ID and try again.',
                         type: BootstrapDialog.TYPE_DANGER
                     });
+                    
+                    // Reset CAPTCHA
+                    loadCaptcha();
+                }
+            })
+            .catch((error) => {
+                hideLoading();
+                console.error("Error fetching certificate:", error);
+                $('#result_display').empty().hide();
+                $('#searchPanel').show();
+                
+                BootstrapDialog.alert({
+                    title: 'Error',
+                    message: 'An error occurred while fetching the certificate. Please try again later.',
+                    type: BootstrapDialog.TYPE_DANGER
                 });
-        }
+                
+                // Reset CAPTCHA
+                loadCaptcha();
+            });
+    }
 
-        function displayCertificateResult(data) {
-            const student = data.studentInfo;
-            
-            // Hide search panel and show results
-            $('#searchPanel').hide();
+    function displayCertificateResult(data) {
+        const student = data.studentInfo;
+        
+        $('#searchPanel').hide();
 
-            let html = `
-                <div class="main-content">
-                    <div class="verification-card">
-                        <table class="info-table">
-                            <tr>
-                                <td class="label-col">Board Name:</td>
-                                <td class="value-col">${data.board || 'DHAKA'}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Certificate Serial:</td>
-                                <td class="value-col">${data.certificated || ''}</td>
-                                
-                            </tr>
-                            <tr>
-                                <td class="label-col">Registration / Session:</td>
-                                <td class="value-col">${student.registrationNo || ''} / ${student.session || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Exam Name:</td>
-                                <td class="value-col">${data.examination || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Exam Year:</td>
-                                <td class="value-col">${data.year || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Name:</td>
-                                <td class="value-col">${student.name || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Father:</td>
-                                <td class="value-col">${student.fatherName || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Mother:</td>
-                                <td class="value-col">${student.motherName || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Roll No.:</td>
-                                <td class="value-col">${student.rollNo || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Group:</td>
-                                <td class="value-col">${student.group || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">GPA:</td>
-                                <td class="value-col">${student.gpa || ''}</td>
-                            </tr>
-                            <tr>
-                                <td class="label-col">Date of Birth:</td>
-                                <td class="value-col">${student.dateOfBirth || ''}</td>
-                            </tr>
-                        </table>
-                        
-                    </div>
+        let html = `
+            <div class="main-content">
+                <div class="verification-card">
+                    <table class="info-table">
+                        <tr>
+                            <td class="label-col">Board Name:</td>
+                            <td class="value-col">${data.board || 'DHAKA'}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Certificate Serial:</td>
+                            <td class="value-col">${data.certificated || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Registration / Session:</td>
+                            <td class="value-col">${student.registrationNo || ''} / ${student.session || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Exam Name:</td>
+                            <td class="value-col">${data.examination || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Exam Year:</td>
+                            <td class="value-col">${data.year || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Name:</td>
+                            <td class="value-col">${student.name || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Father:</td>
+                            <td class="value-col">${student.fatherName || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Mother:</td>
+                            <td class="value-col">${student.motherName || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Roll No.:</td>
+                            <td class="value-col">${student.rollNo || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Group:</td>
+                            <td class="value-col">${student.group || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">GPA:</td>
+                            <td class="value-col">${student.gpa || ''}</td>
+                        </tr>
+                        <tr>
+                            <td class="label-col">Date of Birth:</td>
+                            <td class="value-col">${student.dateOfBirth || ''}</td>
+                        </tr>
+                    </table>
+                    
+                 
                 </div>
-            `;
+            </div>
+        `;
 
-            $('#result_display').html(html).show();
-            
-            // Scroll to results
-            $('html, body').animate({
-                scrollTop: $('#result_display').offset().top - 20
-            }, 500);
-        }
+        $('#result_display').html(html).show();
+        
+        $('html, body').animate({
+            scrollTop: $('#result_display').offset().top - 20
+        }, 500);
+    }
 
-        function resetToSearch() {
-            // Clear the result display
-            $('#result_display').empty().hide();
-            // Show search panel
-            $('#searchPanel').show();
-            // Clear certificate ID field
-            $('#k').val('');
-            // Update URL to remove certificate parameter
-            window.history.pushState({}, '', window.location.pathname);
-            // Scroll to top
-            $('html, body').animate({ scrollTop: 0 }, 300);
-        }
+    function resetToSearch() {
+        $('#result_display').empty().hide();
+        $('#searchPanel').show();
+        $('#k').val('');
+        window.history.pushState({}, '', window.location.pathname);
+        loadCaptcha();
+        $('html, body').animate({ scrollTop: 0 }, 300);
+    }
 
-        function showLoading() {
-            $('body').addClass('loading');
-        }
+    function showLoading() {
+        $('body').addClass('loading');
+    }
 
-        function hideLoading() {
-            $('body').removeClass('loading');
-        }
-    </script>
+    function hideLoading() {
+        $('body').removeClass('loading');
+    }
+</script>
 </body>
 </html>
