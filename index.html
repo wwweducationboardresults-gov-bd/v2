@@ -87,10 +87,28 @@
         }
 
         .info-table td {
-            padding: 14px 20px;
-            font-size: 1.3rem;
-            color: #333;
-        }
+    padding: 14px 20px;
+    font-size: 1.3rem;
+    color: #333;
+    white-space: nowrap;
+}
+
+/* Optional: If you want to also prevent word breaks for browsers that might split words */
+.info-table td {
+    word-break: keep-all;
+    overflow-wrap: normal;
+}
+
+/* If you need the table to be scrollable on very small screens instead of overflowing */
+@media only screen and (max-width: 480px) {
+    .verification-card {
+        overflow-x: auto;
+    }
+    
+    .info-table {
+        min-width: 100%;
+    }
+}
 
         .label-col {
             width: 35%;
@@ -292,7 +310,7 @@
             const certId = urlParams.get('cert');
             if (certId) {
                 $('#k').val(certId);
-                fetchAndDisplayCertificate(certId);
+                
             }
 
             // Form submission
@@ -379,7 +397,8 @@
                             </tr>
                             <tr>
                                 <td class="label-col">Certificate Serial:</td>
-                                <td class="value-col">${data.certificateId || ''}</td>
+                                <td class="value-col">${data.certificated || ''}</td>
+                                
                             </tr>
                             <tr>
                                 <td class="label-col">Registration / Session:</td>
