@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <title>CertifyPro • Admin</title>
-  <!-- Font Awesome 6 for crisp icons -->
+  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts for clean modern typography -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-  <!-- QRCode.js library for generating QR codes -->
+  <!-- QRCode.js -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <style>
     * {
@@ -29,7 +29,6 @@
       position: relative;
     }
 
-    /* intense glass morphism background elements */
     body::before {
       content: "";
       position: fixed;
@@ -56,7 +55,7 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       width: 100%;
       background: rgba(255,255,255,0.8);
       backdrop-filter: blur(30px);
@@ -71,7 +70,6 @@
       transition: all 0.3s ease;
     }
 
-    /* header intense styling */
     .admin-header {
       display: flex;
       align-items: center;
@@ -119,7 +117,6 @@
       border-color: #fecaca;
     }
 
-    /* card panels - extraordinary clean */
     .card-panel {
       background: rgba(255,255,255,0.7);
       backdrop-filter: blur(20px);
@@ -228,6 +225,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
+      margin-left: auto;
     }
     .btn-add:hover {
       background: #00a86b;
@@ -320,11 +318,86 @@
     #loginSection {
       text-align: center;
     }
+
+    /* Saved certificates list */
+    .saved-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+    .cert-item {
+      background: white;
+      border-radius: 1.2rem;
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(0,0,0,0.05);
+      transition: 0.2s;
+    }
+    .cert-item:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .cert-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .cert-name {
+      font-weight: 700;
+      color: #0b2b44;
+    }
+    .cert-meta {
+      font-size: 0.75rem;
+      color: #64748b;
+      display: flex;
+      gap: 0.8rem;
+    }
+    .action-btns {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .action-btn {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      padding: 0.4rem 0.9rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .edit-btn {
+      color: #2563eb;
+      border-color: #bfdbfe;
+    }
+    .edit-btn:hover {
+      background: #dbeafe;
+    }
+    .delete-btn {
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+    .delete-btn:hover {
+      background: #fee2e2;
+    }
+    .cancel-edit-btn {
+      background: #f1f5f9;
+      color: #475569;
+      margin-left: 0.5rem;
+    }
   </style>
 </head>
 <body>
 <div class="container" id="mainContainer">
-  <!-- Login Section (hidden when logged in) -->
+  <!-- Login Section -->
   <div id="loginSection">
     <div style="margin-bottom: 2rem;">
       <i class="fas fa-shield-haltered" style="font-size: 4rem; color: #0b2b44; background: linear-gradient(135deg, #e6f7f0, white); padding: 1.5rem; border-radius: 50%;"></i>
@@ -344,7 +417,7 @@
     </div>
   </div>
 
-  <!-- Admin Panel (hidden initially) -->
+  <!-- Admin Panel -->
   <div id="adminSection" style="display: none;">
     <div class="admin-header">
       <div class="logo-area">
@@ -354,6 +427,7 @@
     </div>
 
     <form id="certificateForm">
+      <input type="hidden" id="editingCertId" value="">
       <div class="card-panel">
         <div class="panel-title"><i class="fas fa-id-card"></i> Certificate Identity</div>
         <div class="form-grid">
@@ -406,7 +480,10 @@
         <div id="continuousSubjectsContainer"></div>
       </div>
 
-      <button type="submit" class="save-btn"><i class="fas fa-save"></i> Save Certificate & Generate QR</button>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <button type="submit" class="save-btn" id="saveCertBtn"><i class="fas fa-save"></i> Save Certificate & Generate QR</button>
+        <button type="button" class="save-btn cancel-edit-btn" id="cancelEditBtn" style="display: none; background: #94a3b8; box-shadow: none;"><i class="fas fa-times"></i> Cancel Edit</button>
+      </div>
     </form>
 
     <!-- Success & QR Display -->
@@ -426,6 +503,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Saved Certificates List -->
+    <div class="card-panel" style="margin-top: 2rem;">
+      <div class="panel-title"><i class="fas fa-list-alt"></i> Saved Certificates <button type="button" class="btn-add" id="refreshListBtn"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+      <div id="savedCertificatesList" class="saved-list">
+        <div style="text-align: center; color: #64748b; padding: 1rem;">Loading certificates...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -437,7 +522,6 @@
 
 <script>
   (function() {
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCpyBQCI209BkMyg-pB2Zy0AJqSADZlApQ",
       authDomain: "board-result-dhaka.firebaseapp.com",
@@ -463,8 +547,11 @@
     const qrContainer = document.getElementById('qrCanvasContainer');
     const verifyLinkInput = document.getElementById('verifyLink');
     const certIdDisplay = document.getElementById('certIdDisplay');
+    const editingCertId = document.getElementById('editingCertId');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const saveCertBtn = document.getElementById('saveCertBtn');
+    const savedListDiv = document.getElementById('savedCertificatesList');
     
-    // Current QR code instance
     let currentQRCode = null;
     let lastGeneratedCertId = null;
 
@@ -474,10 +561,12 @@
         loginSection.style.display = 'none';
         adminSection.style.display = 'block';
         ensureSubjectRows();
+        loadSavedCertificates();
       } else {
         loginSection.style.display = 'block';
         adminSection.style.display = 'none';
         successPanel.style.display = 'none';
+        resetForm();
       }
     });
 
@@ -492,15 +581,13 @@
         .catch(err => { loginError.textContent = err.message; loginError.style.display='block'; });
     });
 
-    // Logout
     logoutBtn.addEventListener('click', () => auth.signOut());
 
-    // Helper: generate ID
     function generateCertId() {
       return Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 11);
     }
 
-    // Subject rows management
+    // Subject rows
     function createSubjectRow(prefix = 'subject') {
       const row = document.createElement('div');
       row.className = 'subject-row';
@@ -530,7 +617,6 @@
       document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject'));
     });
 
-    // Collect subjects
     function collectSubjects(containerId, codeName, nameName, gradeName) {
       const container = document.getElementById(containerId);
       const rows = container.querySelectorAll('.subject-row');
@@ -544,7 +630,23 @@
       return subjects;
     }
 
-    // Generate QR & display
+    function populateSubjects(containerId, subjectsArray, prefix) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!subjectsArray || subjectsArray.length === 0) {
+        container.appendChild(createSubjectRow(prefix));
+        return;
+      }
+      subjectsArray.forEach(sub => {
+        const row = createSubjectRow(prefix);
+        row.querySelector(`input[name="${prefix}Code[]"]`).value = sub.code || '';
+        row.querySelector(`input[name="${prefix}Name[]"]`).value = sub.name || '';
+        row.querySelector(`input[name="${prefix}Grade[]"]`).value = sub.grade || '';
+        container.appendChild(row);
+      });
+    }
+
+    // QR display
     function displayQRCode(certificateId) {
       qrContainer.innerHTML = '';
       const verificationUrl = `https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certificateId}`;
@@ -563,7 +665,6 @@
       successPanel.style.display = 'block';
     }
 
-    // Download QR
     document.getElementById('downloadQrBtn').addEventListener('click', function() {
       if(!currentQRCode || !lastGeneratedCertId) return;
       const canvas = qrContainer.querySelector('canvas');
@@ -575,21 +676,161 @@
       }
     });
 
-    // Copy link
     document.getElementById('copyLinkBtn').addEventListener('click', function() {
       navigator.clipboard.writeText(verifyLinkInput.value).then(() => {
         alert('Verification link copied!');
       });
     });
 
-    // Form submit
+    // Reset form
+    function resetForm() {
+      document.getElementById('certificateForm').reset();
+      document.getElementById('certificateId').value = '';
+      document.getElementById('editingCertId').value = '';
+      document.getElementById('year').value = '2024';
+      document.getElementById('board').value = 'DHAKA';
+      document.getElementById('gpa').value = '3.89';
+      document.getElementById('session').value = '2022-23';
+      document.getElementById('institute').value = 'Model College';
+      ensureSubjectRows();
+      cancelEditBtn.style.display = 'none';
+      saveCertBtn.innerHTML = '<i class="fas fa-save"></i> Save Certificate & Generate QR';
+      successPanel.style.display = 'none';
+    }
+
+    // Cancel edit
+    cancelEditBtn.addEventListener('click', resetForm);
+
+    // Load saved certificates list
+    function loadSavedCertificates() {
+      const user = auth.currentUser;
+      if (!user) return;
+      
+      savedListDiv.innerHTML = '<div style="text-align: center; padding: 1rem;"><i class="fas fa-spinner fa-pulse"></i> Loading...</div>';
+      
+      db.collection("certificates")
+        .orderBy("createdAt", "desc")
+        .limit(30)
+        .get()
+        .then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            savedListDiv.innerHTML = '<div style="text-align: center; color: #64748b; padding: 1rem;">No certificates saved yet.</div>';
+            return;
+          }
+          let html = '';
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const certId = doc.id;
+            const studentName = data.studentInfo?.name || 'Unknown';
+            const exam = data.examination || '';
+            const year = data.year || '';
+            html += `
+              <div class="cert-item" id="cert-item-${certId}">
+                <div class="cert-info">
+                  <span class="cert-name">${studentName}</span>
+                  <span class="cert-meta">
+                    <span><i class="far fa-id-badge"></i> ${certId.substring(0,12)}…</span>
+                    <span>${exam} ${year}</span>
+                  </span>
+                </div>
+                <div class="action-btns">
+                  <button class="action-btn edit-btn" data-id="${certId}"><i class="fas fa-edit"></i> Edit</button>
+                  <button class="action-btn delete-btn" data-id="${certId}"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+              </div>
+            `;
+          });
+          savedListDiv.innerHTML = html;
+          
+          // Attach event listeners
+          document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const id = e.currentTarget.getAttribute('data-id');
+              loadCertificateForEdit(id);
+            });
+          });
+          
+          document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const id = e.currentTarget.getAttribute('data-id');
+              deleteCertificate(id);
+            });
+          });
+        })
+        .catch((error) => {
+          savedListDiv.innerHTML = `<div style="color: #b91c1c;">Error: ${error.message}</div>`;
+        });
+    }
+
+    document.getElementById('refreshListBtn').addEventListener('click', loadSavedCertificates);
+
+    // Load certificate into form for editing
+    function loadCertificateForEdit(certId) {
+      db.collection("certificates").doc(certId).get().then((doc) => {
+        if (!doc.exists) {
+          alert("Certificate not found.");
+          return;
+        }
+        const data = doc.data();
+        document.getElementById('editingCertId').value = certId;
+        document.getElementById('certificateId').value = certId;
+        document.getElementById('examination').value = data.examination || 'SSC';
+        document.getElementById('year').value = data.year || '';
+        document.getElementById('board').value = data.board || '';
+        
+        const info = data.studentInfo || {};
+        document.getElementById('studentName').value = info.name || '';
+        document.getElementById('rollNo').value = info.rollNo || '';
+        document.getElementById('registrationNo').value = info.registrationNo || '';
+        document.getElementById('fatherName').value = info.fatherName || '';
+        document.getElementById('motherName').value = info.motherName || '';
+        document.getElementById('dateOfBirth').value = info.dateOfBirth || '';
+        document.getElementById('gender').value = info.gender || 'Male';
+        document.getElementById('gpa').value = info.gpa || '';
+        document.getElementById('group').value = info.group || 'SCIENCE';
+        document.getElementById('session').value = info.session || '';
+        document.getElementById('type').value = info.type || 'REGULAR';
+        document.getElementById('institute').value = info.institute || '';
+        
+        populateSubjects('subjectsContainer', data.subjects, 'subject');
+        populateSubjects('continuousSubjectsContainer', data.continuousAssessment, 'contSubject');
+        
+        cancelEditBtn.style.display = 'inline-flex';
+        saveCertBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Update Certificate';
+        successPanel.style.display = 'none';
+        
+        // Scroll to form
+        document.getElementById('certificateForm').scrollIntoView({ behavior: 'smooth' });
+      }).catch(err => alert("Edit load error: " + err.message));
+    }
+
+    // Delete certificate
+    function deleteCertificate(certId) {
+      if (!confirm(`Permanently delete certificate ${certId}? This cannot be undone.`)) return;
+      
+      db.collection("certificates").doc(certId).delete().then(() => {
+        alert("Certificate deleted successfully.");
+        // If currently editing this cert, reset form
+        if (document.getElementById('editingCertId').value === certId) {
+          resetForm();
+        }
+        loadSavedCertificates();
+        successPanel.style.display = 'none';
+      }).catch(err => alert("Delete error: " + err.message));
+    }
+
+    // Form submit (create or update)
     document.getElementById('certificateForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const user = auth.currentUser;
       if(!user) { alert('Please login first'); return; }
 
+      const editingId = document.getElementById('editingCertId').value;
       let certificateId = document.getElementById('certificateId').value.trim();
-      if(!certificateId) certificateId = generateCertId();
+      
+      if (!certificateId) {
+        certificateId = editingId || generateCertId();
+      }
 
       const coreSubjects = collectSubjects('subjectsContainer', 'subjectCode[]', 'subjectName[]', 'subjectGrade[]');
       const contSubjects = collectSubjects('continuousSubjectsContainer', 'contSubjectCode[]', 'contSubjectName[]', 'contSubjectGrade[]');
@@ -616,21 +857,34 @@
         subjects: coreSubjects,
         continuousAssessment: contSubjects,
         verified: true,
-        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         createdBy: user.email
       };
 
-      db.collection("certificates").doc(certificateId).set(certificateData)
+      // If new record, add createdAt
+      if (!editingId) {
+        certificateData.createdAt = new Date().toISOString();
+      }
+
+      const docRef = db.collection("certificates").doc(certificateId);
+      
+      docRef.set(certificateData, { merge: true })
         .then(() => {
           displayQRCode(certificateId);
-          // Optionally reset some fields but keep structure
+          if (editingId) {
+            alert("Certificate updated successfully.");
+          }
+          // Reset editing state but keep QR visible
+          document.getElementById('editingCertId').value = '';
+          cancelEditBtn.style.display = 'none';
+          saveCertBtn.innerHTML = '<i class="fas fa-save"></i> Save Certificate & Generate QR';
+          loadSavedCertificates();
         })
         .catch(error => {
           alert("Error: " + error.message);
         });
     });
 
-    // initial subject rows
     ensureSubjectRows();
   })();
 </script>
