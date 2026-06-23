@@ -1,540 +1,638 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Certificate Management System</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.0/css/bootstrap.min.css">
-    <style>
-        body { padding: 20px; background-color: #f5f5f5; }
-        .container { max-width: 900px; background: white; padding: 30px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header { background: #00a65a; color: white; padding: 15px; margin-bottom: 30px; border-radius: 4px; }
-        .subject-row { margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; }
-        .btn-add { margin-bottom: 15px; }
-        #loginSection { margin-top: 50px; }
-        #adminSection { display: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>CertifyPro • Admin</title>
+  <!-- Font Awesome 6 for crisp icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts for clean modern typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- QRCode.js library for generating QR codes -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(145deg, #f0f4f8 0%, #e6ecf3 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      margin: 0;
+      position: relative;
+    }
+
+    /* intense glass morphism background elements */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 180, 120, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(80px);
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -15%;
+      left: -5%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(10, 70, 130, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(70px);
+    }
+
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(250,252,255,0.9) 100%);
+      box-shadow: 0 30px 60px rgba(0,20,30,0.25), 0 10px 25px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+      border-radius: 3.5rem;
+      padding: 2.5rem;
+      position: relative;
+      z-index: 2;
+      border: 1px solid rgba(255,255,255,0.7);
+      transition: all 0.3s ease;
+    }
+
+    /* header intense styling */
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .logo-area h2 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #0b2b44, #0a5e4b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .logo-area i {
+      background: none;
+      -webkit-text-fill-color: #00a86b;
+      font-size: 2.2rem;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 0.7rem 1.8rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      color: #1e293b;
+      transition: 0.25s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+    }
+    .logout-btn:hover {
+      background: white;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+
+    /* card panels - extraordinary clean */
+    .card-panel {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 2.2rem;
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 20px 35px rgba(0,32,20,0.08), inset 0 1px 0 white;
+      transition: transform 0.2s ease;
+    }
+    .card-panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 28px 45px rgba(0,40,30,0.12);
+    }
+    .panel-title {
+      font-weight: 650;
+      font-size: 1.2rem;
+      letter-spacing: -0.2px;
+      color: #0b2b44;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding-bottom: 0.7rem;
+    }
+    .panel-title i {
+      color: #00a86b;
+      font-size: 1.3rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #445569;
+    }
+    input, select {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 1.2rem;
+      padding: 0.7rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      outline: none;
+      transition: 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      font-family: 'Inter', sans-serif;
+    }
+    input:focus, select:focus {
+      border-color: #00a86b;
+      box-shadow: 0 0 0 3px rgba(0,168,107,0.2);
+      background: white;
+    }
+
+    .subject-row {
+      background: rgba(248,250,252,0.8);
+      border-radius: 1.2rem;
+      padding: 0.8rem;
+      margin-bottom: 0.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .subject-row input {
+      flex: 1 1 120px;
+    }
+    .btn-icon {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0.4rem;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .btn-icon:hover {
+      background: rgba(220,38,38,0.1);
+      color: #b91c1c;
+    }
+    .btn-add {
+      background: rgba(0,168,107,0.1);
+      color: #007a4d;
+      border: 1px solid rgba(0,168,107,0.2);
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn-add:hover {
+      background: #00a86b;
+      color: white;
+    }
+
+    .save-btn {
+      background: linear-gradient(115deg, #0b2b44 0%, #0f4e3a 100%);
+      border: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 1rem;
+      border-radius: 2.5rem;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.3s;
+      letter-spacing: 0.3px;
+      box-shadow: 0 14px 28px rgba(0,107,70,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .save-btn:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 20px 35px rgba(0,130,80,0.4);
+      transform: scale(1.01);
+    }
+
+    .success-panel {
+      background: rgba(240, 253, 244, 0.8);
+      backdrop-filter: blur(20px);
+      border-radius: 2rem;
+      padding: 1.5rem;
+      margin-top: 1.8rem;
+      border: 1px solid #bbf7d0;
+      display: none;
+    }
+    .qr-download-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    #qrCanvasContainer {
+      background: white;
+      padding: 0.8rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    .link-copy-box {
+      background: white;
+      border-radius: 2rem;
+      padding: 0.3rem 0.3rem 0.3rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    .link-copy-box input {
+      border: none;
+      background: transparent;
+      font-size: 0.85rem;
+      width: 260px;
+      box-shadow: none;
+    }
+    .copy-btn {
+      background: #0b2b44;
+      color: white;
+      border: none;
+      border-radius: 2rem;
+      padding: 0.5rem 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .download-qr-btn {
+      background: white;
+      border: 1px solid #00a86b;
+      color: #007a4d;
+      border-radius: 2rem;
+      padding: 0.5rem 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    #loginSection {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Login Section -->
-        <div id="loginSection">
-            <div class="header text-center">
-                <h2>Admin Login</h2>
-                <p>Certificate Profile Management System</p>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><strong>Sign In</strong></div>
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" class="form-control" id="email" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" class="form-control" id="password" required>
-                            </div>
-                            <button class="btn btn-success btn-block" onclick="login()">Login</button>
-                            <div id="loginError" style="color: red; margin-top: 10px; display: none;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container" id="mainContainer">
+  <!-- Login Section (hidden when logged in) -->
+  <div id="loginSection">
+    <div style="margin-bottom: 2rem;">
+      <i class="fas fa-shield-haltered" style="font-size: 4rem; color: #0b2b44; background: linear-gradient(135deg, #e6f7f0, white); padding: 1.5rem; border-radius: 50%;"></i>
+      <h2 style="font-weight: 700; margin-top: 1rem; color: #0b2b44;">CertifyPro Admin</h2>
+    </div>
+    <div class="card-panel" style="max-width: 400px; margin: 0 auto;">
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" id="email" placeholder="admin@board.edu" value="">
+      </div>
+      <div class="form-group" style="margin-top: 1rem;">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+      </div>
+      <button id="loginBtn" class="save-btn" style="margin-top: 1.5rem;"><i class="fas fa-arrow-right-to-bracket"></i> Sign In</button>
+      <div id="loginError" style="color: #b91c1c; margin-top: 0.8rem; display: none;"></div>
+    </div>
+  </div>
 
-        <!-- Admin Section -->
-        <div id="adminSection">
-            <div class="header text-center">
-                <h2>Certificate Profile Management</h2>
-                <p>Create and Manage Document Verification Certificates</p>
-                <button class="btn btn-danger btn-sm pull-right" onclick="logout()">Logout</button>
-            </div>
-
-            <form id="certificateForm">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Certificate Information</strong></div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Certificate ID (Auto-generated or Manual)</label>
-                                    <input type="text" class="form-control" id="certificateId" required>
-                                    <small class="help-block">Format: XXXX-XXXXX-XXXXX (e.g., 0615-20647-1b355881a)</small>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Examination</label>
-                                    <select class="form-control" id="examination">
-                                        <option value="SSC">SSC</option>
-                                        <option value="HSC">HSC</option>
-                                        <option value="JSC">JSC</option>
-                                        <option value="DAKHIL">DAKHIL</option>
-                                        <option value="ALIM">ALIM</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Year</label>
-                                    <input type="text" class="form-control" id="year" value="2024">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Board</label>
-                                    <input type="text" class="form-control" id="board" value="DHAKA">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Student Information</strong></div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Student Name</label>
-                                    <input type="text" class="form-control" id="studentName" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Roll No</label>
-                                    <input type="text" class="form-control" id="rollNo" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Father's Name</label>
-                                    <input type="text" class="form-control" id="fatherName" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Mother's Name</label>
-                                    <input type="text" class="form-control" id="motherName" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Date of Birth</label>
-                                    <input type="text" class="form-control" id="dateOfBirth" placeholder="DD-MM-YYYY">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Gender</label>
-                                    <select class="form-control" id="gender">
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>GPA</label>
-                                    <input type="number" step="0.01" class="form-control" id="gpa" value="3.89">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Group</label>
-                                    <select class="form-control" id="group">
-                                        <option value="SCIENCE">SCIENCE</option>
-                                        <option value="BUSINESS STUDIES">BUSINESS STUDIES</option>
-                                        <option value="HUMANITIES">HUMANITIES</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Session</label>
-                                    <input type="text" class="form-control" id="session" value="2022-23">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>Type</label>
-                                    <select class="form-control" id="type">
-                                        <option value="REGULAR">REGULAR</option>
-                                        <option value="IRREGULAR">IRREGULAR</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Institute Name</label>
-                                    <input type="text" class="form-control" id="institute" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong>Subjects</strong>
-                        <button type="button" class="btn btn-xs btn-success pull-right" onclick="addSubject()">Add Subject</button>
-                    </div>
-                    <div class="panel-body" id="subjectsContainer">
-                        <div class="subject-row">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control" placeholder="Code" name="subjectCode[]">
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Subject Name" name="subjectName[]">
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" class="form-control" placeholder="Grade" name="subjectGrade[]">
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-danger btn-xs" onclick="removeSubject(this)">X</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong>Continuous Assessment Subjects</strong>
-                        <button type="button" class="btn btn-xs btn-success pull-right" onclick="addContinuousSubject()">Add Subject</button>
-                    </div>
-                    <div class="panel-body" id="continuousSubjectsContainer">
-                        <!-- Continuous subjects will be added here -->
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Save Certificate</button>
-            </form>
-
-            <div id="successMessage" style="display: none; margin-top: 20px;" class="alert alert-success"></div>
-        </div>
+  <!-- Admin Panel (hidden initially) -->
+  <div id="adminSection" style="display: none;">
+    <div class="admin-header">
+      <div class="logo-area">
+        <h2><i class="fas fa-certificate"></i> CertifyPro</h2>
+      </div>
+      <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <form id="certificateForm">
+      <div class="card-panel">
+        <div class="panel-title"><i class="fas fa-id-card"></i> Certificate Identity</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Certificate ID</label>
+            <input type="text" id="certificateId" placeholder="Auto or custom ID">
+          </div>
+          <div class="form-group">
+            <label>Examination</label>
+            <select id="examination">
+              <option>SSC</option><option>HSC</option><option>JSC</option><option>DAKHIL</option><option>ALIM</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Year</label>
+            <input type="text" id="year" value="2024">
+          </div>
+          <div class="form-group">
+            <label>Board</label>
+            <input type="text" id="board" value="DHAKA">
+          </div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-title"><i class="fas fa-user-graduate"></i> Student Details</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name</label><input id="studentName" placeholder="Ahmed Hasan"></div>
+          <div class="form-group"><label>Roll No</label><input id="rollNo" placeholder="123456"></div>
+          <div class="form-group"><label>Registration No</label><input id="registrationNo" placeholder="987654"></div>
+          <div class="form-group"><label>Father's Name</label><input id="fatherName"></div>
+          <div class="form-group"><label>Mother's Name</label><input id="motherName"></div>
+          <div class="form-group"><label>Date of Birth</label><input id="dateOfBirth" placeholder="DD-MM-YYYY"></div>
+          <div class="form-group"><label>Gender</label><select id="gender"><option>Male</option><option>Female</option></select></div>
+          <div class="form-group"><label>GPA</label><input id="gpa" value="3.89" step="0.01" type="number"></div>
+          <div class="form-group"><label>Group</label><select id="group"><option>SCIENCE</option><option>BUSINESS STUDIES</option><option>HUMANITIES</option></select></div>
+          <div class="form-group"><label>Session</label><input id="session" value="2022-23"></div>
+          <div class="form-group"><label>Type</label><select id="type"><option>REGULAR</option><option>IRREGULAR</option></select></div>
+          <div class="form-group"><label>Institute</label><input id="institute" value="Model College"></div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-title"><i class="fas fa-book-open"></i> Core Subjects <button type="button" class="btn-add" id="addSubjectBtn"><i class="fas fa-plus-circle"></i> Add</button></div>
+        <div id="subjectsContainer"></div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-title"><i class="fas fa-clipboard-check"></i> Continuous Assessment <button type="button" class="btn-add" id="addContSubjectBtn"><i class="fas fa-plus-circle"></i> Add</button></div>
+        <div id="continuousSubjectsContainer"></div>
+      </div>
+
+      <button type="submit" class="save-btn"><i class="fas fa-save"></i> Save Certificate & Generate QR</button>
+    </form>
+
+    <!-- Success & QR Display -->
+    <div id="successPanel" class="success-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <h4 style="color: #0b5e42;"><i class="fas fa-check-circle"></i> Certificate Saved</h4>
+        <span id="certIdDisplay" style="font-weight: 700; background: white; padding: 0.3rem 1rem; border-radius: 2rem;"></span>
+      </div>
+      <div class="qr-download-area" style="margin-top: 1.2rem;">
+        <div id="qrCanvasContainer"></div>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="link-copy-box">
+            <input type="text" id="verifyLink" readonly>
+            <button class="copy-btn" id="copyLinkBtn"><i class="far fa-copy"></i> Copy</button>
+          </div>
+          <button class="download-qr-btn" id="downloadQrBtn"><i class="fas fa-download"></i> Download QR Image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase & Libraries -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+  (function() {
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpyBQCI209BkMyg-pB2Zy0AJqSADZlApQ",
+      authDomain: "board-result-dhaka.firebaseapp.com",
+      projectId: "board-result-dhaka",
+      storageBucket: "board-result-dhaka.firebasestorage.app",
+      messagingSenderId: "735668089933",
+      appId: "1:735668089933:web:bc504d3f8fc46bbdc71804"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // DOM elements
+    const loginSection = document.getElementById('loginSection');
+    const adminSection = document.getElementById('adminSection');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginError = document.getElementById('loginError');
+    const successPanel = document.getElementById('successPanel');
+    const qrContainer = document.getElementById('qrCanvasContainer');
+    const verifyLinkInput = document.getElementById('verifyLink');
+    const certIdDisplay = document.getElementById('certIdDisplay');
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    // Current QR code instance
+    let currentQRCode = null;
+    let lastGeneratedCertId = null;
 
-    <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCpyBQCI209BkMyg-pB2Zy0AJqSADZlApQ",
-            authDomain: "board-result-dhaka.firebaseapp.com",
-            projectId: "board-result-dhaka",
-            storageBucket: "board-result-dhaka.firebasestorage.app",
-            messagingSenderId: "735668089933",
-            appId: "1:735668089933:web:bc504d3f8fc46bbdc71804"
-        };
+    // Auth state
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        loginSection.style.display = 'none';
+        adminSection.style.display = 'block';
+        ensureSubjectRows();
+      } else {
+        loginSection.style.display = 'block';
+        adminSection.style.display = 'none';
+        successPanel.style.display = 'none';
+      }
+    });
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    // Login
+    loginBtn.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      if(!email || !password) {
+        loginError.textContent = 'Email and password required.'; loginError.style.display='block'; return;
+      }
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(err => { loginError.textContent = err.message; loginError.style.display='block'; });
+    });
 
-        // Check authentication state
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in
-                $('#loginSection').hide();
-                $('#adminSection').show();
-                loadExistingCertificates();
-            } else {
-                // User is signed out
-                $('#loginSection').show();
-                $('#adminSection').hide();
-            }
+    // Logout
+    logoutBtn.addEventListener('click', () => auth.signOut());
+
+    // Helper: generate ID
+    function generateCertId() {
+      return Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 11);
+    }
+
+    // Subject rows management
+    function createSubjectRow(prefix = 'subject') {
+      const row = document.createElement('div');
+      row.className = 'subject-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Code" name="${prefix}Code[]" style="flex:1;">
+        <input type="text" placeholder="Subject Name" name="${prefix}Name[]" style="flex:2;">
+        <input type="text" placeholder="Grade" name="${prefix}Grade[]" style="flex:1;">
+        <button type="button" class="btn-icon remove-row"><i class="fas fa-times-circle"></i></button>
+      `;
+      row.querySelector('.remove-row').addEventListener('click', () => row.remove());
+      return row;
+    }
+
+    function ensureSubjectRows() {
+      if(document.getElementById('subjectsContainer').children.length === 0) {
+        document.getElementById('subjectsContainer').appendChild(createSubjectRow('subject'));
+      }
+      if(document.getElementById('continuousSubjectsContainer').children.length === 0) {
+        document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject'));
+      }
+    }
+
+    document.getElementById('addSubjectBtn').addEventListener('click', () => {
+      document.getElementById('subjectsContainer').appendChild(createSubjectRow('subject'));
+    });
+    document.getElementById('addContSubjectBtn').addEventListener('click', () => {
+      document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject'));
+    });
+
+    // Collect subjects
+    function collectSubjects(containerId, codeName, nameName, gradeName) {
+      const container = document.getElementById(containerId);
+      const rows = container.querySelectorAll('.subject-row');
+      const subjects = [];
+      rows.forEach(row => {
+        const code = row.querySelector(`input[name="${codeName}"]`)?.value.trim();
+        const name = row.querySelector(`input[name="${nameName}"]`)?.value.trim();
+        const grade = row.querySelector(`input[name="${gradeName}"]`)?.value.trim();
+        if(code && name && grade) subjects.push({ code, name, grade });
+      });
+      return subjects;
+    }
+
+    // Generate QR & display
+    function displayQRCode(certificateId) {
+      qrContainer.innerHTML = '';
+      const verificationUrl = `https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certificateId}`;
+      verifyLinkInput.value = verificationUrl;
+      certIdDisplay.textContent = `ID: ${certificateId}`;
+      
+      currentQRCode = new QRCode(qrContainer, {
+        text: verificationUrl,
+        width: 140,
+        height: 140,
+        colorDark: "#0b2b44",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      lastGeneratedCertId = certificateId;
+      successPanel.style.display = 'block';
+    }
+
+    // Download QR
+    document.getElementById('downloadQrBtn').addEventListener('click', function() {
+      if(!currentQRCode || !lastGeneratedCertId) return;
+      const canvas = qrContainer.querySelector('canvas');
+      if(canvas) {
+        const link = document.createElement('a');
+        link.download = `QR_${lastGeneratedCertId}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
+    });
+
+    // Copy link
+    document.getElementById('copyLinkBtn').addEventListener('click', function() {
+      navigator.clipboard.writeText(verifyLinkInput.value).then(() => {
+        alert('Verification link copied!');
+      });
+    });
+
+    // Form submit
+    document.getElementById('certificateForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if(!user) { alert('Please login first'); return; }
+
+      let certificateId = document.getElementById('certificateId').value.trim();
+      if(!certificateId) certificateId = generateCertId();
+
+      const coreSubjects = collectSubjects('subjectsContainer', 'subjectCode[]', 'subjectName[]', 'subjectGrade[]');
+      const contSubjects = collectSubjects('continuousSubjectsContainer', 'contSubjectCode[]', 'contSubjectName[]', 'contSubjectGrade[]');
+
+      const certificateData = {
+        certificateId,
+        examination: document.getElementById('examination').value,
+        year: document.getElementById('year').value,
+        board: document.getElementById('board').value,
+        studentInfo: {
+          name: document.getElementById('studentName').value,
+          rollNo: document.getElementById('rollNo').value,
+          registrationNo: document.getElementById('registrationNo').value,
+          fatherName: document.getElementById('fatherName').value,
+          motherName: document.getElementById('motherName').value,
+          dateOfBirth: document.getElementById('dateOfBirth').value,
+          gender: document.getElementById('gender').value,
+          group: document.getElementById('group').value,
+          type: document.getElementById('type').value,
+          session: document.getElementById('session').value,
+          gpa: parseFloat(document.getElementById('gpa').value) || 0,
+          institute: document.getElementById('institute').value
+        },
+        subjects: coreSubjects,
+        continuousAssessment: contSubjects,
+        verified: true,
+        createdAt: new Date().toISOString(),
+        createdBy: user.email
+      };
+
+      db.collection("certificates").doc(certificateId).set(certificateData)
+        .then(() => {
+          displayQRCode(certificateId);
+          // Optionally reset some fields but keep structure
+        })
+        .catch(error => {
+          alert("Error: " + error.message);
         });
+    });
 
-        // Login function
-        function login() {
-            const email = $('#email').val();
-            const password = $('#password').val();
-            
-            if (!email || !password) {
-                $('#loginError').text('Please enter email and password').show();
-                return;
-            }
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    console.log('Logged in successfully');
-                })
-                .catch((error) => {
-                    console.error('Login error:', error);
-                    $('#loginError').text('Login failed: ' + error.message).show();
-                });
-        }
-
-        // Logout function
-        function logout() {
-            auth.signOut().then(() => {
-                console.log('Logged out successfully');
-            }).catch((error) => {
-                console.error('Logout error:', error);
-            });
-        }
-
-        // Add subject row
-        function addSubject() {
-            const subjectHtml = `
-                <div class="subject-row">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" placeholder="Code" name="subjectCode[]">
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Subject Name" name="subjectName[]">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" placeholder="Grade" name="subjectGrade[]">
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="removeSubject(this)">X</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#subjectsContainer').append(subjectHtml);
-        }
-
-        // Add continuous assessment subject
-        function addContinuousSubject() {
-            const subjectHtml = `
-                <div class="subject-row">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" placeholder="Code" name="contSubjectCode[]">
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" placeholder="Subject Name" name="contSubjectName[]">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" placeholder="Grade" name="contSubjectGrade[]">
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-danger btn-xs" onclick="removeSubject(this)">X</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            $('#continuousSubjectsContainer').append(subjectHtml);
-        }
-
-        // Remove subject row
-        function removeSubject(button) {
-            $(button).closest('.subject-row').remove();
-        }
-
-        // Generate certificate ID
-        function generateCertificateId() {
-            const timestamp = Date.now().toString(36);
-            const random = Math.random().toString(36).substr(2, 9);
-            return `${timestamp}-${random}`;
-        }
-
-        // Form submission
-        $('#certificateForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            // Get subjects
-            const subjectCodes = $('input[name="subjectCode[]"]').map(function() { return $(this).val(); }).get();
-            const subjectNames = $('input[name="subjectName[]"]').map(function() { return $(this).val(); }).get();
-            const subjectGrades = $('input[name="subjectGrade[]"]').map(function() { return $(this).val(); }).get();
-            
-            const subjects = [];
-            for (let i = 0; i < subjectCodes.length; i++) {
-                if (subjectCodes[i] && subjectNames[i] && subjectGrades[i]) {
-                    subjects.push({
-                        code: subjectCodes[i],
-                        name: subjectNames[i],
-                        grade: subjectGrades[i]
-                    });
-                }
-            }
-
-            // Get continuous assessment subjects
-            const contCodes = $('input[name="contSubjectCode[]"]').map(function() { return $(this).val(); }).get();
-            const contNames = $('input[name="contSubjectName[]"]').map(function() { return $(this).val(); }).get();
-            const contGrades = $('input[name="contSubjectGrade[]"]').map(function() { return $(this).val(); }).get();
-            
-            const continuousAssessment = [];
-            for (let i = 0; i < contCodes.length; i++) {
-                if (contCodes[i] && contNames[i] && contGrades[i]) {
-                    continuousAssessment.push({
-                        code: contCodes[i],
-                        name: contNames[i],
-                        grade: contGrades[i]
-                    });
-                }
-            }
-
-            // Get certificate ID or generate new one
-            let certificateId = $('#certificateId').val().trim();
-            if (!certificateId) {
-                certificateId = generateCertificateId();
-            }
-
-            // Create certificate data object
-            const certificateData = {
-                certificateId: certificateId,
-                examination: $('#examination').val(),
-                year: $('#year').val(),
-                board: $('#board').val(),
-                studentInfo: {
-                    rollNo: $('#rollNo').val(),
-                    registrationNo: '[NOT SHOWN]', // Can be added as input field
-                    name: $('#studentName').val(),
-                    fatherName: $('#fatherName').val(),
-                    motherName: $('#motherName').val(),
-                    dateOfBirth: $('#dateOfBirth').val(),
-                    gender: $('#gender').val(),
-                    group: $('#group').val(),
-                    type: $('#type').val(),
-                    session: $('#session').val(),
-                    gpa: parseFloat($('#gpa').val()),
-                    institute: $('#institute').val()
-                },
-                subjects: subjects,
-                continuousAssessment: continuousAssessment,
-                verified: true,
-                createdAt: new Date().toISOString(),
-                createdBy: auth.currentUser.email
-            };
-
-            // Save to Firestore
-            db.collection("certificates").doc(certificateId).set(certificateData)
-                .then(() => {
-                    $('#successMessage').html(`
-                        <strong>Success!</strong> Certificate saved successfully.<br>
-                        Certificate ID: <strong>${certificateId}</strong><br>
-                        QR Code URL: <strong>https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certificateId}</strong>
-                    `).show();
-                    
-                    // Reset form
-                    $('#certificateForm')[0].reset();
-                    $('#subjectsContainer').empty();
-                    $('#continuousSubjectsContainer').empty();
-                    addSubject(); // Add one empty subject row
-                    
-                    // Scroll to top
-                    $('html, body').animate({ scrollTop: 0 }, 500);
-                    
-                    // Hide success message after 10 seconds
-                    setTimeout(() => {
-                        $('#successMessage').hide();
-                    }, 10000);
-                })
-                .catch((error) => {
-                    console.error("Error saving certificate:", error);
-                    alert("Error saving certificate: " + error.message);
-                });
-        });
-
-        // Load existing certificates for the logged-in user
-        function loadExistingCertificates() {
-            db.collection("certificates")
-                .where("createdBy", "==", auth.currentUser.email)
-                .orderBy("createdAt", "desc")
-                .limit(10)
-                .get()
-                .then((querySnapshot) => {
-                    if (querySnapshot.empty) {
-                        console.log("No certificates found");
-                        return;
-                    }
-                    
-                    let tableHtml = `
-                        <div class="panel panel-default" style="margin-top: 20px;">
-                            <div class="panel-heading"><strong>Recent Certificates Created</strong></div>
-                            <div class="panel-body">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Certificate ID</th>
-                                            <th>Student Name</th>
-                                            <th>Examination</th>
-                                            <th>Year</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                    `;
-                    
-                    querySnapshot.forEach((doc) => {
-                        const data = doc.data();
-                        tableHtml += `
-                            <tr>
-                                <td><small>${data.certificateId}</small></td>
-                                <td>${data.studentInfo.name}</td>
-                                <td>${data.examination}</td>
-                                <td>${data.year}</td>
-                                <td>
-                                    <button class="btn btn-xs btn-info" onclick="viewCertificate('${data.certificateId}')">View</button>
-                                    <button class="btn btn-xs btn-danger" onclick="deleteCertificate('${data.certificateId}')">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                    
-                    tableHtml += `
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-                    
-                    $('#adminSection').append(tableHtml);
-                })
-                .catch((error) => {
-                    console.error("Error loading certificates:", error);
-                });
-        }
-
-        // View certificate
-        function viewCertificate(certificateId) {
-            window.open(`https://your-domain.com?cert=${certificateId}`, '_blank');
-        }
-
-        // Delete certificate
-        function deleteCertificate(certificateId) {
-            if (confirm('Are you sure you want to delete this certificate?')) {
-                db.collection("certificates").doc(certificateId).delete()
-                    .then(() => {
-                        alert('Certificate deleted successfully');
-                        location.reload();
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting certificate:", error);
-                        alert("Error deleting certificate: " + error.message);
-                    });
-            }
-        }
-
-        // Add initial subject row
-        $(document).ready(function() {
-            addSubject();
-        });
-    </script>
+    // initial subject rows
+    ensureSubjectRows();
+  })();
+</script>
 </body>
 </html>
