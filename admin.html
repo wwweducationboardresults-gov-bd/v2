@@ -6,7 +6,7 @@
   <title>CertifyPro • Admin</title>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts: Inter & Outfit for refined Android style -->
+  <!-- Google Fonts: Inter & Outfit -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <!-- QRCode.js -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -16,7 +16,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f5f7fb;
@@ -28,8 +27,6 @@
       margin: 0;
       position: relative;
     }
-
-    /* Soft Android-like ambient glows */
     body::before {
       content: "";
       position: fixed;
@@ -54,15 +51,11 @@
       z-index: 0;
       filter: blur(65px);
     }
-
     .container {
       max-width: 1150px;
       width: 100%;
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
       background: #ffffff;
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 4px 18px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 4px 18px rgba(0,0,0,0.05);
       border-radius: 2.5rem;
       padding: 2.2rem 2rem;
       position: relative;
@@ -70,8 +63,6 @@
       transition: all 0.2s ease;
       border: 1px solid rgba(226, 232, 240, 0.6);
     }
-
-    /* Android-style header */
     .admin-header {
       display: flex;
       align-items: center;
@@ -102,8 +93,7 @@
       margin: 0;
     }
     .logout-btn {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(12px);
+      background: #ffffff;
       border: 1px solid #e2e8f0;
       padding: 0.6rem 1.8rem;
       border-radius: 3rem;
@@ -115,7 +105,6 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background: #ffffff;
       box-shadow: 0 4px 10px rgba(0,0,0,0.02);
       letter-spacing: 0.2px;
     }
@@ -125,20 +114,14 @@
       color: #b91c1c;
       border-color: #fecaca;
     }
-
-    /* Card panels – clean Android elevation */
     .card-panel {
       background: #ffffff;
       border-radius: 2rem;
       padding: 1.6rem 1.8rem;
       margin-bottom: 1.8rem;
       border: 1px solid #f1f5f9;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 6px rgba(0,20,30,0.02);
-      transition: box-shadow 0.25s ease, transform 0.2s ease;
-    }
-    .card-panel:hover {
-      box-shadow: 0 20px 30px -10px rgba(0,32,20,0.08), 0 0 0 1px rgba(0,168,107,0.1);
-      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+      transition: box-shadow 0.25s ease;
     }
     .panel-title {
       font-weight: 650;
@@ -157,7 +140,6 @@
       font-size: 1.3rem;
       width: 1.8rem;
     }
-
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -177,7 +159,7 @@
       margin-left: 0.2rem;
     }
     input, select, textarea {
-      background: #f8fafc;
+      background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 1rem;
       padding: 0.7rem 1rem;
@@ -186,7 +168,6 @@
       outline: none;
       transition: 0.2s;
       font-family: 'Inter', sans-serif;
-      background: #ffffff;
       box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     input:focus, select:focus, textarea:focus {
@@ -194,7 +175,6 @@
       box-shadow: 0 0 0 3px rgba(0,168,107,0.15);
       background: white;
     }
-
     .subject-row {
       background: #f9fafb;
       border-radius: 1rem;
@@ -224,7 +204,7 @@
       color: #b91c1c;
     }
     .btn-add {
-      background: rgba(0,168,107,0.08);
+      background: #ffffff;
       color: #007a4d;
       border: 1px solid rgba(0,168,107,0.15);
       padding: 0.45rem 1.2rem;
@@ -236,17 +216,14 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      margin-left: auto;
-      background: #ffffff;
     }
     .btn-add:hover {
       background: #00a86b;
       color: white;
       border-color: #00a86b;
     }
-
     .save-btn {
-      background: #0b2b44;
+      background: linear-gradient(105deg, #0b2b44 0%, #0f4e3a 100%);
       border: none;
       color: white;
       font-weight: 700;
@@ -262,14 +239,12 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      background: linear-gradient(105deg, #0b2b44 0%, #0f4e3a 100%);
     }
     .save-btn:hover {
       filter: brightness(1.1);
       box-shadow: 0 16px 28px -6px rgba(0,130,80,0.45);
       transform: scale(1.01);
     }
-
     .success-panel {
       background: #f0fdf4;
       border-radius: 1.8rem;
@@ -328,7 +303,6 @@
       align-items: center;
       gap: 0.3rem;
     }
-
     .saved-list, .captcha-list {
       display: flex;
       flex-direction: column;
@@ -346,6 +320,7 @@
       justify-content: space-between;
       border: 1px solid #f1f5f9;
       transition: 0.2s;
+      cursor: pointer;
     }
     .cert-item:hover, .captcha-item:hover {
       background: #fafcfc;
@@ -390,9 +365,8 @@
     .edit-btn { color: #2563eb; border-color: #bfdbfe; }
     .delete-btn { color: #b91c1c; border-color: #fecaca; }
     .cancel-edit-btn {
-      background: #f1f5f9;
-      color: #475569;
-      margin-left: 0.5rem;
+      background: #94a3b8;
+      box-shadow: none;
     }
     .status-badge {
       padding: 0.15rem 0.6rem;
@@ -408,6 +382,58 @@
       object-fit: contain;
       border-radius: 8px;
       background: #f8fafc;
+    }
+    /* Modal styles for certificate detail popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 2rem;
+      max-width: 500px;
+      width: 100%;
+      padding: 1.8rem;
+      box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+      position: relative;
+      animation: modalPop 0.2s ease;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1.2rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .modal-qr {
+      display: flex;
+      justify-content: center;
+      margin: 1.2rem 0;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+      justify-content: flex-end;
     }
   </style>
 </head>
@@ -457,7 +483,7 @@
         </div>
         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
           <button type="button" class="save-btn" id="saveCaptchaBtn" style="flex:1;"><i class="fas fa-save"></i> Save Captcha</button>
-          <button type="button" class="save-btn cancel-edit-btn" id="cancelCaptchaEditBtn" style="display: none; flex:1; background: #94a3b8; box-shadow: none;"><i class="fas fa-times"></i> Cancel</button>
+          <button type="button" class="save-btn cancel-edit-btn" id="cancelCaptchaEditBtn" style="display: none; flex:1;"><i class="fas fa-times"></i> Cancel</button>
         </div>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
@@ -508,7 +534,7 @@
       </div>
       <div style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
         <button type="submit" class="save-btn" id="saveCertBtn"><i class="fas fa-save"></i> Save Certificate & Generate QR</button>
-        <button type="button" class="save-btn cancel-edit-btn" id="cancelEditBtn" style="display: none; background: #94a3b8; box-shadow: none;"><i class="fas fa-times"></i> Cancel Edit</button>
+        <button type="button" class="save-btn cancel-edit-btn" id="cancelEditBtn" style="display: none;"><i class="fas fa-times"></i> Cancel Edit</button>
       </div>
     </form>
 
@@ -741,6 +767,60 @@
     }
     cancelEditBtn.addEventListener('click', resetForm);
 
+    // ---- POPUP DETAIL MODAL ----
+    function showCertificateDetail(certId) {
+      db.collection("certificates").doc(certId).get().then(doc => {
+        if (!doc.exists) { alert("Certificate not found."); return; }
+        const d = doc.data();
+        const student = d.studentInfo || {};
+        const url = `https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certId}`;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal-content">
+            <button class="modal-close"><i class="fas fa-times"></i></button>
+            <h3 style="margin-bottom:1rem; color:#0b2b44;"><i class="fas fa-certificate"></i> ${student.name || 'Certificate'}</h3>
+            <div class="detail-row"><span>ID</span><strong>${certId}</strong></div>
+            <div class="detail-row"><span>Examination</span><strong>${d.examination||''} ${d.year||''}</strong></div>
+            <div class="detail-row"><span>Board</span><strong>${d.board||''}</strong></div>
+            <div class="detail-row"><span>Roll</span><strong>${student.rollNo||''}</strong></div>
+            <div class="detail-row"><span>GPA</span><strong>${student.gpa||''}</strong></div>
+            <div class="detail-row"><span>Institute</span><strong>${student.institute||''}</strong></div>
+            <div class="modal-qr" id="modalQrContainer"></div>
+            <div style="text-align:center; font-size:0.8rem; color:#475569; margin-bottom:0.8rem;">${url}</div>
+            <div class="modal-actions">
+              <button class="action-btn edit-btn" id="modalEditBtn"><i class="fas fa-edit"></i> Edit</button>
+              <button class="action-btn delete-btn" id="modalDeleteBtn"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        
+        // Generate QR inside modal
+        setTimeout(() => {
+          new QRCode(document.getElementById('modalQrContainer'), { text: url, width: 120, height: 120 });
+        }, 20);
+        
+        overlay.querySelector('.modal-close').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+        
+        document.getElementById('modalEditBtn').addEventListener('click', () => {
+          overlay.remove();
+          loadCertificateForEdit(certId);
+        });
+        document.getElementById('modalDeleteBtn').addEventListener('click', () => {
+          if(confirm('Delete this certificate?')) {
+            db.collection("certificates").doc(certId).delete().then(() => {
+              overlay.remove();
+              loadSavedCertificates();
+              if(editingCertId.value === certId) resetForm();
+            });
+          }
+        });
+      }).catch(err => alert("Error loading details: " + err.message));
+    }
+
     function loadSavedCertificates() {
       if(!auth.currentUser) return;
       savedListDiv.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-pulse"></i></div>';
@@ -749,11 +829,40 @@
         let html = '';
         snap.forEach(doc => {
           const d = doc.data(); const id = doc.id;
-          html += `<div class="cert-item"><div class="cert-info"><span class="cert-name">${d.studentInfo?.name||'Unknown'}</span><span class="cert-meta">${id.substring(0,12)}… · ${d.examination||''} ${d.year||''}</span></div><div class="action-btns"><button class="action-btn edit-btn" data-id="${id}"><i class="fas fa-edit"></i> Edit</button><button class="action-btn delete-btn" data-id="${id}"><i class="fas fa-trash-alt"></i> Delete</button></div></div>`;
+          html += `<div class="cert-item" data-certid="${id}">
+            <div class="cert-info">
+              <span class="cert-name">${d.studentInfo?.name||'Unknown'}</span>
+              <span class="cert-meta">${id.substring(0,12)}… · ${d.examination||''} ${d.year||''}</span>
+            </div>
+            <div class="action-btns">
+              <button class="action-btn edit-btn" data-id="${id}"><i class="fas fa-edit"></i> Edit</button>
+              <button class="action-btn delete-btn" data-id="${id}"><i class="fas fa-trash-alt"></i> Delete</button>
+            </div>
+          </div>`;
         });
         savedListDiv.innerHTML = html;
-        document.querySelectorAll('#savedCertificatesList .edit-btn').forEach(b => b.addEventListener('click', e => loadCertificateForEdit(e.currentTarget.dataset.id)));
-        document.querySelectorAll('#savedCertificatesList .delete-btn').forEach(b => b.addEventListener('click', e => deleteCertificate(e.currentTarget.dataset.id)));
+        
+        // Click on certificate item to open detail popup
+        document.querySelectorAll('#savedCertificatesList .cert-item').forEach(item => {
+          item.addEventListener('click', function(e) {
+            if (e.target.closest('button')) return; // ignore button clicks
+            const certId = this.dataset.certid;
+            if (certId) showCertificateDetail(certId);
+          });
+        });
+        
+        document.querySelectorAll('#savedCertificatesList .edit-btn').forEach(b => {
+          b.addEventListener('click', e => {
+            e.stopPropagation();
+            loadCertificateForEdit(e.currentTarget.dataset.id);
+          });
+        });
+        document.querySelectorAll('#savedCertificatesList .delete-btn').forEach(b => {
+          b.addEventListener('click', e => {
+            e.stopPropagation();
+            deleteCertificate(e.currentTarget.dataset.id);
+          });
+        });
       });
     }
     document.getElementById('refreshListBtn').addEventListener('click', loadSavedCertificates);
