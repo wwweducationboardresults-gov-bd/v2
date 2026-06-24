@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>CertifyPro • Admin</title>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Inter & Outfit for refined Android style -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
   <!-- QRCode.js -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <style>
@@ -19,249 +19,262 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(145deg, #f0f4f8 0%, #e6ecf3 100%);
+      background: #f5f7fb;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
       margin: 0;
       position: relative;
     }
 
+    /* Soft Android-like ambient glows */
     body::before {
       content: "";
       position: fixed;
-      top: -20%;
-      right: -10%;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(0, 180, 120, 0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: 0;
-      filter: blur(80px);
-    }
-    body::after {
-      content: "";
-      position: fixed;
-      bottom: -15%;
-      left: -5%;
+      top: -15%;
+      right: -5%;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(10, 70, 130, 0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0, 168, 107, 0.12) 0%, transparent 70%);
       border-radius: 50%;
       z-index: 0;
       filter: blur(70px);
     }
-
-    .container {
-      max-width: 1100px;
-      width: 100%;
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(250,252,255,0.9) 100%);
-      box-shadow: 0 30px 60px rgba(0,20,30,0.25), 0 10px 25px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
-      border-radius: 3.5rem;
-      padding: 2.5rem;
-      position: relative;
-      z-index: 2;
-      border: 1px solid rgba(255,255,255,0.7);
-      transition: all 0.3s ease;
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -10%;
+      left: -5%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(11, 43, 68, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(65px);
     }
 
+    .container {
+      max-width: 1150px;
+      width: 100%;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background: #ffffff;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), 0 4px 18px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02);
+      border-radius: 2.5rem;
+      padding: 2.2rem 2rem;
+      position: relative;
+      z-index: 2;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(226, 232, 240, 0.6);
+    }
+
+    /* Android-style header */
     .admin-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.2rem;
       flex-wrap: wrap;
       gap: 1rem;
     }
-    .logo-area h2 {
-      font-weight: 700;
-      font-size: 2.2rem;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #0b2b44, #0a5e4b);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: inline-flex;
+    .logo-area {
+      display: flex;
       align-items: center;
       gap: 0.5rem;
     }
     .logo-area i {
-      background: none;
-      -webkit-text-fill-color: #00a86b;
-      font-size: 2.2rem;
+      font-size: 2.4rem;
+      color: #00a86b;
+      filter: drop-shadow(0 6px 10px rgba(0,168,107,0.2));
+    }
+    .logo-area h2 {
+      font-family: 'Outfit', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #0b2b44, #0f5a40);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
     }
     .logout-btn {
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(0,0,0,0.08);
-      padding: 0.7rem 1.8rem;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(12px);
+      border: 1px solid #e2e8f0;
+      padding: 0.6rem 1.8rem;
       border-radius: 3rem;
       font-weight: 600;
+      font-size: 0.9rem;
       color: #1e293b;
-      transition: 0.25s;
+      transition: all 0.25s;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+      letter-spacing: 0.2px;
     }
     .logout-btn:hover {
-      background: white;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      background: #fff5f5;
+      box-shadow: 0 8px 18px rgba(185,28,28,0.08);
       color: #b91c1c;
       border-color: #fecaca;
     }
 
+    /* Card panels – clean Android elevation */
     .card-panel {
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 2.2rem;
-      padding: 1.8rem;
-      margin-bottom: 2rem;
-      border: 1px solid rgba(255,255,255,0.9);
-      box-shadow: 0 20px 35px rgba(0,32,20,0.08), inset 0 1px 0 white;
-      transition: transform 0.2s ease;
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 1.6rem 1.8rem;
+      margin-bottom: 1.8rem;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04), 0 2px 6px rgba(0,20,30,0.02);
+      transition: box-shadow 0.25s ease, transform 0.2s ease;
     }
     .card-panel:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 28px 45px rgba(0,40,30,0.12);
+      box-shadow: 0 20px 30px -10px rgba(0,32,20,0.08), 0 0 0 1px rgba(0,168,107,0.1);
+      transform: translateY(-1px);
     }
     .panel-title {
       font-weight: 650;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       letter-spacing: -0.2px;
       color: #0b2b44;
       margin-bottom: 1.5rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding-bottom: 0.7rem;
+      gap: 0.6rem;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 0.8rem;
     }
     .panel-title i {
       color: #00a86b;
       font-size: 1.3rem;
+      width: 1.8rem;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.1rem;
     }
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.35rem;
     }
     label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #445569;
+      letter-spacing: 0.4px;
+      color: #475569;
+      margin-left: 0.2rem;
     }
-    input, select {
-      background: rgba(255,255,255,0.9);
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 1.2rem;
+    input, select, textarea {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
       padding: 0.7rem 1rem;
       font-size: 0.9rem;
       font-weight: 500;
       outline: none;
       transition: 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
       font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: #00a86b;
-      box-shadow: 0 0 0 3px rgba(0,168,107,0.2);
+      box-shadow: 0 0 0 3px rgba(0,168,107,0.15);
       background: white;
     }
 
     .subject-row {
-      background: rgba(248,250,252,0.8);
-      border-radius: 1.2rem;
-      padding: 0.8rem;
-      margin-bottom: 0.7rem;
+      background: #f9fafb;
+      border-radius: 1rem;
+      padding: 0.7rem 0.8rem;
+      margin-bottom: 0.6rem;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 0.5rem;
-      border: 1px solid rgba(0,0,0,0.03);
+      border: 1px solid #f1f5f9;
     }
     .subject-row input {
-      flex: 1 1 120px;
+      flex: 1 1 110px;
     }
     .btn-icon {
       background: none;
       border: none;
-      color: #64748b;
+      color: #94a3b8;
       cursor: pointer;
       font-size: 1.1rem;
-      padding: 0.4rem;
+      padding: 0.3rem;
       border-radius: 50%;
       transition: 0.2s;
     }
     .btn-icon:hover {
-      background: rgba(220,38,38,0.1);
+      background: rgba(220,38,38,0.08);
       color: #b91c1c;
     }
     .btn-add {
-      background: rgba(0,168,107,0.1);
+      background: rgba(0,168,107,0.08);
       color: #007a4d;
-      border: 1px solid rgba(0,168,107,0.2);
-      padding: 0.5rem 1.2rem;
+      border: 1px solid rgba(0,168,107,0.15);
+      padding: 0.45rem 1.2rem;
       border-radius: 2rem;
       font-weight: 600;
       font-size: 0.8rem;
       cursor: pointer;
-      transition: 0.25s;
+      transition: 0.2s;
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
       margin-left: auto;
+      background: #ffffff;
     }
     .btn-add:hover {
       background: #00a86b;
       color: white;
+      border-color: #00a86b;
     }
 
     .save-btn {
-      background: linear-gradient(115deg, #0b2b44 0%, #0f4e3a 100%);
+      background: #0b2b44;
       border: none;
       color: white;
       font-weight: 700;
-      font-size: 1.2rem;
-      padding: 1rem;
+      font-size: 1.1rem;
+      padding: 0.9rem 1.8rem;
       border-radius: 2.5rem;
       width: 100%;
       cursor: pointer;
-      transition: 0.3s;
-      letter-spacing: 0.3px;
-      box-shadow: 0 14px 28px rgba(0,107,70,0.3);
+      transition: 0.25s;
+      letter-spacing: 0.2px;
+      box-shadow: 0 10px 20px -8px rgba(0,107,70,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      background: linear-gradient(105deg, #0b2b44 0%, #0f4e3a 100%);
     }
     .save-btn:hover {
-      filter: brightness(1.15);
-      box-shadow: 0 20px 35px rgba(0,130,80,0.4);
+      filter: brightness(1.1);
+      box-shadow: 0 16px 28px -6px rgba(0,130,80,0.45);
       transform: scale(1.01);
     }
 
     .success-panel {
-      background: rgba(240, 253, 244, 0.8);
-      backdrop-filter: blur(20px);
-      border-radius: 2rem;
-      padding: 1.5rem;
-      margin-top: 1.8rem;
+      background: #f0fdf4;
+      border-radius: 1.8rem;
+      padding: 1.4rem;
+      margin-top: 1.5rem;
       border: 1px solid #bbf7d0;
       display: none;
     }
@@ -274,24 +287,24 @@
     }
     #qrCanvasContainer {
       background: white;
-      padding: 0.8rem;
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      padding: 0.6rem;
+      border-radius: 1.4rem;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.05);
     }
     .link-copy-box {
       background: white;
       border-radius: 2rem;
-      padding: 0.3rem 0.3rem 0.3rem 1.5rem;
+      padding: 0.2rem 0.2rem 0.2rem 1.2rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       border: 1px solid #e2e8f0;
     }
     .link-copy-box input {
       border: none;
       background: transparent;
-      font-size: 0.85rem;
-      width: 260px;
+      font-size: 0.8rem;
+      width: 240px;
       box-shadow: none;
     }
     .copy-btn {
@@ -308,90 +321,93 @@
       border: 1px solid #00a86b;
       color: #007a4d;
       border-radius: 2rem;
-      padding: 0.5rem 1.2rem;
+      padding: 0.5rem 1.3rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.3rem;
     }
-    #loginSection {
-      text-align: center;
-    }
 
-    /* Saved certificates list */
-    .saved-list {
+    .saved-list, .captcha-list {
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
-      max-height: 400px;
+      gap: 0.7rem;
+      max-height: 380px;
       overflow-y: auto;
-      margin-top: 1rem;
+      margin-top: 0.8rem;
     }
-    .cert-item {
+    .cert-item, .captcha-item {
       background: white;
       border-radius: 1.2rem;
       padding: 0.8rem 1.2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid #f1f5f9;
       transition: 0.2s;
     }
-    .cert-item:hover {
-      background: #f8fafc;
+    .cert-item:hover, .captcha-item:hover {
+      background: #fafcfc;
       border-color: #cbd5e1;
     }
-    .cert-info {
+    .cert-info, .captcha-info {
       display: flex;
       flex-direction: column;
       gap: 0.2rem;
     }
-    .cert-name {
+    .cert-name, .captcha-secret {
       font-weight: 700;
       color: #0b2b44;
     }
-    .cert-meta {
-      font-size: 0.75rem;
+    .captcha-secret {
+      font-family: monospace;
+      font-size: 1rem;
+    }
+    .cert-meta, .captcha-meta {
+      font-size: 0.7rem;
       color: #64748b;
       display: flex;
       gap: 0.8rem;
+      flex-wrap: wrap;
     }
     .action-btns {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
     .action-btn {
       background: transparent;
       border: 1px solid #e2e8f0;
-      padding: 0.4rem 0.9rem;
+      padding: 0.35rem 1rem;
       border-radius: 2rem;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
       display: flex;
       align-items: center;
       gap: 0.2rem;
     }
-    .edit-btn {
-      color: #2563eb;
-      border-color: #bfdbfe;
-    }
-    .edit-btn:hover {
-      background: #dbeafe;
-    }
-    .delete-btn {
-      color: #b91c1c;
-      border-color: #fecaca;
-    }
-    .delete-btn:hover {
-      background: #fee2e2;
-    }
+    .edit-btn { color: #2563eb; border-color: #bfdbfe; }
+    .delete-btn { color: #b91c1c; border-color: #fecaca; }
     .cancel-edit-btn {
       background: #f1f5f9;
       color: #475569;
       margin-left: 0.5rem;
+    }
+    .status-badge {
+      padding: 0.15rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+    }
+    .status-active { background: #dcfce7; color: #166534; }
+    .status-inactive { background: #fee2e2; color: #991b1b; }
+    .captcha-image {
+      width: 100px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #f8fafc;
     }
   </style>
 </head>
@@ -399,11 +415,11 @@
 <div class="container" id="mainContainer">
   <!-- Login Section -->
   <div id="loginSection">
-    <div style="margin-bottom: 2rem;">
-      <i class="fas fa-shield-haltered" style="font-size: 4rem; color: #0b2b44; background: linear-gradient(135deg, #e6f7f0, white); padding: 1.5rem; border-radius: 50%;"></i>
-      <h2 style="font-weight: 700; margin-top: 1rem; color: #0b2b44;">CertifyPro Admin</h2>
+    <div style="margin-bottom: 2rem; text-align: center;">
+      <i class="fas fa-shield-alt" style="font-size: 3.8rem; color: #0b2b44; background: #f0fdf4; padding: 1.2rem; border-radius: 50%; box-shadow: 0 10px 20px rgba(0,168,107,0.1);"></i>
+      <h2 style="font-weight: 700; margin-top: 0.8rem; color: #0b2b44; font-family: 'Outfit', sans-serif;">CertifyPro Admin</h2>
     </div>
-    <div class="card-panel" style="max-width: 400px; margin: 0 auto;">
+    <div class="card-panel" style="max-width: 380px; margin: 0 auto;">
       <div class="form-group">
         <label><i class="fas fa-envelope"></i> Email</label>
         <input type="email" id="email" placeholder="admin@board.edu" value="">
@@ -421,37 +437,50 @@
   <div id="adminSection" style="display: none;">
     <div class="admin-header">
       <div class="logo-area">
-        <h2><i class="fas fa-certificate"></i> CertifyPro</h2>
+        <i class="fas fa-certificate"></i>
+        <h2>CertifyPro</h2>
       </div>
       <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
 
+    <!-- Captcha Management -->
+    <div class="card-panel">
+      <div class="panel-title"><i class="fas fa-shield-alt"></i> Captcha Management</div>
+      <div id="captchaForm" style="margin-bottom: 1.5rem;">
+        <input type="hidden" id="editingCaptchaId" value="">
+        <div class="form-grid">
+          <div class="form-group"><label>Secret Code</label><input type="text" id="captchaSecret" placeholder="e.g. 9519" maxlength="6"></div>
+          <div class="form-group"><label>Length</label><input type="number" id="captchaLength" value="4" min="1" max="8"></div>
+          <div class="form-group"><label>Image URL</label><input type="text" id="captchaImageUrl" placeholder="https://i.imgur.com/..."></div>
+          <div class="form-group"><label>Status</label><select id="captchaStatus"><option value="true">Active</option><option value="false">Inactive</option></select></div>
+          <div class="form-group"><label>Usage Count</label><input type="number" id="captchaUsageCount" value="0" min="0"></div>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+          <button type="button" class="save-btn" id="saveCaptchaBtn" style="flex:1;"><i class="fas fa-save"></i> Save Captcha</button>
+          <button type="button" class="save-btn cancel-edit-btn" id="cancelCaptchaEditBtn" style="display: none; flex:1; background: #94a3b8; box-shadow: none;"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-weight: 600; color: #0b2b44;"><i class="fas fa-list"></i> All Captchas</span>
+        <button type="button" class="btn-add" id="refreshCaptchaListBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+      <div id="captchaList" class="captcha-list"><div style="text-align: center; color: #64748b;">Loading...</div></div>
+    </div>
+
+    <hr style="border: none; border-top: 2px dashed #e9eef3; margin: 1.8rem 0;">
+
+    <!-- Certificate Form -->
     <form id="certificateForm">
       <input type="hidden" id="editingCertId" value="">
       <div class="card-panel">
         <div class="panel-title"><i class="fas fa-id-card"></i> Certificate Identity</div>
         <div class="form-grid">
-          <div class="form-group">
-            <label>Certificate ID</label>
-            <input type="text" id="certificateId" placeholder="Auto or custom ID">
-          </div>
-          <div class="form-group">
-            <label>Examination</label>
-            <select id="examination">
-              <option>SSC</option><option>HSC</option><option>JSC</option><option>DAKHIL</option><option>ALIM</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Year</label>
-            <input type="text" id="year" value="2024">
-          </div>
-          <div class="form-group">
-            <label>Board</label>
-            <input type="text" id="board" value="DHAKA">
-          </div>
+          <div class="form-group"><label>Certificate ID</label><input type="text" id="certificateId" placeholder="Auto or custom"></div>
+          <div class="form-group"><label>Examination</label><select id="examination"><option>SSC</option><option>HSC</option><option>JSC</option></select></div>
+          <div class="form-group"><label>Year</label><input type="text" id="year" value="2024"></div>
+          <div class="form-group"><label>Board</label><input type="text" id="board" value="DHAKA"></div>
         </div>
       </div>
-
       <div class="card-panel">
         <div class="panel-title"><i class="fas fa-user-graduate"></i> Student Details</div>
         <div class="form-grid">
@@ -469,47 +498,40 @@
           <div class="form-group"><label>Institute</label><input id="institute" value="Model College"></div>
         </div>
       </div>
-
       <div class="card-panel">
         <div class="panel-title"><i class="fas fa-book-open"></i> Core Subjects <button type="button" class="btn-add" id="addSubjectBtn"><i class="fas fa-plus-circle"></i> Add</button></div>
         <div id="subjectsContainer"></div>
       </div>
-
       <div class="card-panel">
         <div class="panel-title"><i class="fas fa-clipboard-check"></i> Continuous Assessment <button type="button" class="btn-add" id="addContSubjectBtn"><i class="fas fa-plus-circle"></i> Add</button></div>
         <div id="continuousSubjectsContainer"></div>
       </div>
-
-      <div style="display: flex; gap: 1rem; align-items: center;">
+      <div style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
         <button type="submit" class="save-btn" id="saveCertBtn"><i class="fas fa-save"></i> Save Certificate & Generate QR</button>
         <button type="button" class="save-btn cancel-edit-btn" id="cancelEditBtn" style="display: none; background: #94a3b8; box-shadow: none;"><i class="fas fa-times"></i> Cancel Edit</button>
       </div>
     </form>
 
-    <!-- Success & QR Display -->
     <div id="successPanel" class="success-panel">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
         <h4 style="color: #0b5e42;"><i class="fas fa-check-circle"></i> Certificate Saved</h4>
-        <span id="certIdDisplay" style="font-weight: 700; background: white; padding: 0.3rem 1rem; border-radius: 2rem;"></span>
+        <span id="certIdDisplay" style="font-weight: 700; background: white; padding: 0.2rem 1rem; border-radius: 2rem;"></span>
       </div>
-      <div class="qr-download-area" style="margin-top: 1.2rem;">
+      <div class="qr-download-area" style="margin-top: 1rem;">
         <div id="qrCanvasContainer"></div>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
           <div class="link-copy-box">
             <input type="text" id="verifyLink" readonly>
             <button class="copy-btn" id="copyLinkBtn"><i class="far fa-copy"></i> Copy</button>
           </div>
-          <button class="download-qr-btn" id="downloadQrBtn"><i class="fas fa-download"></i> Download QR Image</button>
+          <button class="download-qr-btn" id="downloadQrBtn"><i class="fas fa-download"></i> Download QR</button>
         </div>
       </div>
     </div>
 
-    <!-- Saved Certificates List -->
-    <div class="card-panel" style="margin-top: 2rem;">
+    <div class="card-panel" style="margin-top: 1.8rem;">
       <div class="panel-title"><i class="fas fa-list-alt"></i> Saved Certificates <button type="button" class="btn-add" id="refreshListBtn"><i class="fas fa-sync-alt"></i> Refresh</button></div>
-      <div id="savedCertificatesList" class="saved-list">
-        <div style="text-align: center; color: #64748b; padding: 1rem;">Loading certificates...</div>
-      </div>
+      <div id="savedCertificatesList" class="saved-list"><div style="text-align: center;">Loading...</div></div>
     </div>
   </div>
 </div>
@@ -535,7 +557,6 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // DOM elements
     const loginSection = document.getElementById('loginSection');
     const adminSection = document.getElementById('adminSection');
     const loginBtn = document.getElementById('loginBtn');
@@ -552,16 +573,21 @@
     const saveCertBtn = document.getElementById('saveCertBtn');
     const savedListDiv = document.getElementById('savedCertificatesList');
     
+    const captchaListDiv = document.getElementById('captchaList');
+    const editingCaptchaId = document.getElementById('editingCaptchaId');
+    const saveCaptchaBtn = document.getElementById('saveCaptchaBtn');
+    const cancelCaptchaEditBtn = document.getElementById('cancelCaptchaEditBtn');
+    
     let currentQRCode = null;
     let lastGeneratedCertId = null;
 
-    // Auth state
     auth.onAuthStateChanged((user) => {
       if (user) {
         loginSection.style.display = 'none';
         adminSection.style.display = 'block';
         ensureSubjectRows();
         loadSavedCertificates();
+        loadCaptchas();
       } else {
         loginSection.style.display = 'block';
         adminSection.style.display = 'none';
@@ -570,273 +596,210 @@
       }
     });
 
-    // Login
     loginBtn.addEventListener('click', () => {
       const email = emailInput.value.trim();
       const password = passwordInput.value;
-      if(!email || !password) {
-        loginError.textContent = 'Email and password required.'; loginError.style.display='block'; return;
-      }
-      auth.signInWithEmailAndPassword(email, password)
-        .catch(err => { loginError.textContent = err.message; loginError.style.display='block'; });
+      if(!email || !password) { loginError.textContent = 'Email and password required.'; loginError.style.display='block'; return; }
+      auth.signInWithEmailAndPassword(email, password).catch(err => { loginError.textContent = err.message; loginError.style.display='block'; });
     });
-
     logoutBtn.addEventListener('click', () => auth.signOut());
 
     function generateCertId() {
       return Date.now().toString(36) + '-' + Math.random().toString(36).substring(2, 11);
     }
 
-    // Subject rows
-    function createSubjectRow(prefix = 'subject') {
-      const row = document.createElement('div');
-      row.className = 'subject-row';
-      row.innerHTML = `
-        <input type="text" placeholder="Code" name="${prefix}Code[]" style="flex:1;">
-        <input type="text" placeholder="Subject Name" name="${prefix}Name[]" style="flex:2;">
-        <input type="text" placeholder="Grade" name="${prefix}Grade[]" style="flex:1;">
-        <button type="button" class="btn-icon remove-row"><i class="fas fa-times-circle"></i></button>
-      `;
-      row.querySelector('.remove-row').addEventListener('click', () => row.remove());
+    function loadCaptchas() {
+      if (!auth.currentUser) return;
+      captchaListDiv.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-pulse"></i> Loading...</div>';
+      db.collection("captchas").orderBy("createdAt","desc").limit(50).get().then(snap => {
+        if(snap.empty) { captchaListDiv.innerHTML = '<div style="text-align:center;">No captchas yet.</div>'; return; }
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data(); const id = doc.id;
+          html += `<div class="captcha-item"><div class="captcha-info"><span class="captcha-secret">${d.secretCode||'N/A'}</span><span class="captcha-meta">Length:${d.length||0} · Used:${d.usageCount||0} <span class="status-badge ${d.isActive?'status-active':'status-inactive'}">${d.isActive?'Active':'Inactive'}</span></span></div><div style="display:flex; align-items:center; gap:0.6rem;">${d.imageUrl?`<img src="${d.imageUrl}" class="captcha-image" onerror="this.style.display='none'">`:''}<div class="action-btns"><button class="action-btn edit-btn" data-id="${id}"><i class="fas fa-edit"></i></button><button class="action-btn delete-btn" data-id="${id}"><i class="fas fa-trash-alt"></i></button></div></div></div>`;
+        });
+        captchaListDiv.innerHTML = html;
+        document.querySelectorAll('#captchaList .edit-btn').forEach(b => b.addEventListener('click', e => loadCaptchaForEdit(e.currentTarget.dataset.id)));
+        document.querySelectorAll('#captchaList .delete-btn').forEach(b => b.addEventListener('click', e => deleteCaptcha(e.currentTarget.dataset.id)));
+      }).catch(e => captchaListDiv.innerHTML = `<div style="color:#b91c1c;">Error: ${e.message}</div>`);
+    }
+
+    function loadCaptchaForEdit(id) {
+      db.collection("captchas").doc(id).get().then(doc => {
+        if(!doc.exists) return;
+        const d = doc.data();
+        editingCaptchaId.value = id;
+        document.getElementById('captchaSecret').value = d.secretCode||'';
+        document.getElementById('captchaLength').value = d.length||4;
+        document.getElementById('captchaImageUrl').value = d.imageUrl||'';
+        document.getElementById('captchaStatus').value = String(d.isActive);
+        document.getElementById('captchaUsageCount').value = d.usageCount||0;
+        cancelCaptchaEditBtn.style.display = 'inline-block';
+        saveCaptchaBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Update Captcha';
+      });
+    }
+
+    function deleteCaptcha(id) {
+      if(!confirm('Delete captcha?')) return;
+      db.collection("captchas").doc(id).delete().then(() => { loadCaptchas(); if(editingCaptchaId.value===id) resetCaptchaForm(); });
+    }
+
+    function resetCaptchaForm() {
+      editingCaptchaId.value = '';
+      document.getElementById('captchaSecret').value = '';
+      document.getElementById('captchaLength').value = '4';
+      document.getElementById('captchaImageUrl').value = '';
+      document.getElementById('captchaStatus').value = 'true';
+      document.getElementById('captchaUsageCount').value = '0';
+      cancelCaptchaEditBtn.style.display = 'none';
+      saveCaptchaBtn.innerHTML = '<i class="fas fa-save"></i> Save Captcha';
+    }
+
+    saveCaptchaBtn.addEventListener('click', () => {
+      if(!auth.currentUser) return;
+      const secret = document.getElementById('captchaSecret').value.trim();
+      if(!secret) { alert('Secret required'); return; }
+      const editingId = editingCaptchaId.value;
+      const capId = editingId || `captcha_${Date.now()}`;
+      const data = {
+        secretCode: secret,
+        length: parseInt(document.getElementById('captchaLength').value)||4,
+        imageUrl: document.getElementById('captchaImageUrl').value.trim(),
+        isActive: document.getElementById('captchaStatus').value === 'true',
+        usageCount: parseInt(document.getElementById('captchaUsageCount').value)||0,
+        updatedAt: new Date().toISOString(),
+        updatedBy: auth.currentUser.email
+      };
+      if(!editingId) data.createdAt = new Date().toISOString();
+      db.collection("captchas").doc(capId).set(data,{merge:true}).then(() => { resetCaptchaForm(); loadCaptchas(); });
+    });
+    cancelCaptchaEditBtn.addEventListener('click', resetCaptchaForm);
+    document.getElementById('refreshCaptchaListBtn').addEventListener('click', loadCaptchas);
+
+    function createSubjectRow(prefix='subject') {
+      const row = document.createElement('div'); row.className='subject-row';
+      row.innerHTML = `<input placeholder="Code" name="${prefix}Code[]" style="flex:1;"><input placeholder="Subject" name="${prefix}Name[]" style="flex:2;"><input placeholder="Grade" name="${prefix}Grade[]" style="flex:1;"><button type="button" class="btn-icon remove-row"><i class="fas fa-times-circle"></i></button>`;
+      row.querySelector('.remove-row').addEventListener('click', ()=>row.remove());
       return row;
     }
 
     function ensureSubjectRows() {
-      if(document.getElementById('subjectsContainer').children.length === 0) {
-        document.getElementById('subjectsContainer').appendChild(createSubjectRow('subject'));
-      }
-      if(document.getElementById('continuousSubjectsContainer').children.length === 0) {
-        document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject'));
-      }
+      if(!document.getElementById('subjectsContainer').children.length) document.getElementById('subjectsContainer').appendChild(createSubjectRow('subject'));
+      if(!document.getElementById('continuousSubjectsContainer').children.length) document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject'));
     }
-
-    document.getElementById('addSubjectBtn').addEventListener('click', () => {
-      document.getElementById('subjectsContainer').appendChild(createSubjectRow('subject'));
-    });
-    document.getElementById('addContSubjectBtn').addEventListener('click', () => {
-      document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject'));
-    });
+    document.getElementById('addSubjectBtn').addEventListener('click', ()=> document.getElementById('subjectsContainer').appendChild(createSubjectRow('subject')));
+    document.getElementById('addContSubjectBtn').addEventListener('click', ()=> document.getElementById('continuousSubjectsContainer').appendChild(createSubjectRow('contSubject')));
 
     function collectSubjects(containerId, codeName, nameName, gradeName) {
-      const container = document.getElementById(containerId);
-      const rows = container.querySelectorAll('.subject-row');
-      const subjects = [];
-      rows.forEach(row => {
-        const code = row.querySelector(`input[name="${codeName}"]`)?.value.trim();
-        const name = row.querySelector(`input[name="${nameName}"]`)?.value.trim();
-        const grade = row.querySelector(`input[name="${gradeName}"]`)?.value.trim();
-        if(code && name && grade) subjects.push({ code, name, grade });
-      });
-      return subjects;
+      const rows = document.getElementById(containerId).querySelectorAll('.subject-row');
+      return Array.from(rows).map(r => ({
+        code: r.querySelector(`[name="${codeName}"]`)?.value.trim(),
+        name: r.querySelector(`[name="${nameName}"]`)?.value.trim(),
+        grade: r.querySelector(`[name="${gradeName}"]`)?.value.trim()
+      })).filter(s => s.code && s.name && s.grade);
     }
 
-    function populateSubjects(containerId, subjectsArray, prefix) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      if (!subjectsArray || subjectsArray.length === 0) {
-        container.appendChild(createSubjectRow(prefix));
-        return;
-      }
-      subjectsArray.forEach(sub => {
+    function populateSubjects(containerId, arr, prefix) {
+      const container = document.getElementById(containerId); container.innerHTML = '';
+      if(!arr || !arr.length) { container.appendChild(createSubjectRow(prefix)); return; }
+      arr.forEach(s => {
         const row = createSubjectRow(prefix);
-        row.querySelector(`input[name="${prefix}Code[]"]`).value = sub.code || '';
-        row.querySelector(`input[name="${prefix}Name[]"]`).value = sub.name || '';
-        row.querySelector(`input[name="${prefix}Grade[]"]`).value = sub.grade || '';
+        row.querySelector(`[name="${prefix}Code[]"]`).value = s.code||'';
+        row.querySelector(`[name="${prefix}Name[]"]`).value = s.name||'';
+        row.querySelector(`[name="${prefix}Grade[]"]`).value = s.grade||'';
         container.appendChild(row);
       });
     }
 
-    // QR display
-    function displayQRCode(certificateId) {
+    function displayQRCode(certId) {
       qrContainer.innerHTML = '';
-      const verificationUrl = `https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certificateId}`;
-      verifyLinkInput.value = verificationUrl;
-      certIdDisplay.textContent = `ID: ${certificateId}`;
-      
-      currentQRCode = new QRCode(qrContainer, {
-        text: verificationUrl,
-        width: 140,
-        height: 140,
-        colorDark: "#0b2b44",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-      lastGeneratedCertId = certificateId;
+      const url = `https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certId}`;
+      verifyLinkInput.value = url;
+      certIdDisplay.textContent = `ID: ${certId}`;
+      currentQRCode = new QRCode(qrContainer, { text: url, width: 140, height: 140, colorDark:"#0b2b44", colorLight:"#ffffff" });
+      lastGeneratedCertId = certId;
       successPanel.style.display = 'block';
     }
 
-    document.getElementById('downloadQrBtn').addEventListener('click', function() {
-      if(!currentQRCode || !lastGeneratedCertId) return;
+    document.getElementById('downloadQrBtn').addEventListener('click', ()=>{
       const canvas = qrContainer.querySelector('canvas');
-      if(canvas) {
-        const link = document.createElement('a');
-        link.download = `QR_${lastGeneratedCertId}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      }
+      if(canvas) { const a = document.createElement('a'); a.download = `QR_${lastGeneratedCertId}.png`; a.href = canvas.toDataURL(); a.click(); }
     });
+    document.getElementById('copyLinkBtn').addEventListener('click', ()=> navigator.clipboard.writeText(verifyLinkInput.value).then(()=>alert('Copied!')));
 
-    document.getElementById('copyLinkBtn').addEventListener('click', function() {
-      navigator.clipboard.writeText(verifyLinkInput.value).then(() => {
-        alert('Verification link copied!');
-      });
-    });
-
-    // Reset form
     function resetForm() {
       document.getElementById('certificateForm').reset();
       document.getElementById('certificateId').value = '';
-      document.getElementById('editingCertId').value = '';
-      document.getElementById('year').value = '2024';
-      document.getElementById('board').value = 'DHAKA';
-      document.getElementById('gpa').value = '3.89';
-      document.getElementById('session').value = '2022-23';
-      document.getElementById('institute').value = 'Model College';
+      editingCertId.value = '';
+      document.getElementById('year').value='2024'; document.getElementById('board').value='DHAKA';
+      document.getElementById('gpa').value='3.89'; document.getElementById('session').value='2022-23';
+      document.getElementById('institute').value='Model College';
       ensureSubjectRows();
-      cancelEditBtn.style.display = 'none';
-      saveCertBtn.innerHTML = '<i class="fas fa-save"></i> Save Certificate & Generate QR';
-      successPanel.style.display = 'none';
+      cancelEditBtn.style.display='none';
+      saveCertBtn.innerHTML='<i class="fas fa-save"></i> Save Certificate & Generate QR';
+      successPanel.style.display='none';
     }
-
-    // Cancel edit
     cancelEditBtn.addEventListener('click', resetForm);
 
-    // Load saved certificates list
     function loadSavedCertificates() {
-      const user = auth.currentUser;
-      if (!user) return;
-      
-      savedListDiv.innerHTML = '<div style="text-align: center; padding: 1rem;"><i class="fas fa-spinner fa-pulse"></i> Loading...</div>';
-      
-      db.collection("certificates")
-        .orderBy("createdAt", "desc")
-        .limit(30)
-        .get()
-        .then((querySnapshot) => {
-          if (querySnapshot.empty) {
-            savedListDiv.innerHTML = '<div style="text-align: center; color: #64748b; padding: 1rem;">No certificates saved yet.</div>';
-            return;
-          }
-          let html = '';
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const certId = doc.id;
-            const studentName = data.studentInfo?.name || 'Unknown';
-            const exam = data.examination || '';
-            const year = data.year || '';
-            html += `
-              <div class="cert-item" id="cert-item-${certId}">
-                <div class="cert-info">
-                  <span class="cert-name">${studentName}</span>
-                  <span class="cert-meta">
-                    <span><i class="far fa-id-badge"></i> ${certId.substring(0,12)}…</span>
-                    <span>${exam} ${year}</span>
-                  </span>
-                </div>
-                <div class="action-btns">
-                  <button class="action-btn edit-btn" data-id="${certId}"><i class="fas fa-edit"></i> Edit</button>
-                  <button class="action-btn delete-btn" data-id="${certId}"><i class="fas fa-trash-alt"></i> Delete</button>
-                </div>
-              </div>
-            `;
-          });
-          savedListDiv.innerHTML = html;
-          
-          // Attach event listeners
-          document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              const id = e.currentTarget.getAttribute('data-id');
-              loadCertificateForEdit(id);
-            });
-          });
-          
-          document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              const id = e.currentTarget.getAttribute('data-id');
-              deleteCertificate(id);
-            });
-          });
-        })
-        .catch((error) => {
-          savedListDiv.innerHTML = `<div style="color: #b91c1c;">Error: ${error.message}</div>`;
+      if(!auth.currentUser) return;
+      savedListDiv.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-pulse"></i></div>';
+      db.collection("certificates").orderBy("createdAt","desc").limit(30).get().then(snap => {
+        if(snap.empty) { savedListDiv.innerHTML = '<div style="text-align:center;">No certificates yet.</div>'; return; }
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data(); const id = doc.id;
+          html += `<div class="cert-item"><div class="cert-info"><span class="cert-name">${d.studentInfo?.name||'Unknown'}</span><span class="cert-meta">${id.substring(0,12)}… · ${d.examination||''} ${d.year||''}</span></div><div class="action-btns"><button class="action-btn edit-btn" data-id="${id}"><i class="fas fa-edit"></i> Edit</button><button class="action-btn delete-btn" data-id="${id}"><i class="fas fa-trash-alt"></i> Delete</button></div></div>`;
         });
+        savedListDiv.innerHTML = html;
+        document.querySelectorAll('#savedCertificatesList .edit-btn').forEach(b => b.addEventListener('click', e => loadCertificateForEdit(e.currentTarget.dataset.id)));
+        document.querySelectorAll('#savedCertificatesList .delete-btn').forEach(b => b.addEventListener('click', e => deleteCertificate(e.currentTarget.dataset.id)));
+      });
     }
-
     document.getElementById('refreshListBtn').addEventListener('click', loadSavedCertificates);
 
-    // Load certificate into form for editing
-    function loadCertificateForEdit(certId) {
-      db.collection("certificates").doc(certId).get().then((doc) => {
-        if (!doc.exists) {
-          alert("Certificate not found.");
-          return;
-        }
-        const data = doc.data();
-        document.getElementById('editingCertId').value = certId;
-        document.getElementById('certificateId').value = certId;
-        document.getElementById('examination').value = data.examination || 'SSC';
-        document.getElementById('year').value = data.year || '';
-        document.getElementById('board').value = data.board || '';
-        
-        const info = data.studentInfo || {};
-        document.getElementById('studentName').value = info.name || '';
-        document.getElementById('rollNo').value = info.rollNo || '';
-        document.getElementById('registrationNo').value = info.registrationNo || '';
-        document.getElementById('fatherName').value = info.fatherName || '';
-        document.getElementById('motherName').value = info.motherName || '';
-        document.getElementById('dateOfBirth').value = info.dateOfBirth || '';
-        document.getElementById('gender').value = info.gender || 'Male';
-        document.getElementById('gpa').value = info.gpa || '';
-        document.getElementById('group').value = info.group || 'SCIENCE';
-        document.getElementById('session').value = info.session || '';
-        document.getElementById('type').value = info.type || 'REGULAR';
-        document.getElementById('institute').value = info.institute || '';
-        
-        populateSubjects('subjectsContainer', data.subjects, 'subject');
-        populateSubjects('continuousSubjectsContainer', data.continuousAssessment, 'contSubject');
-        
+    function loadCertificateForEdit(id) {
+      db.collection("certificates").doc(id).get().then(doc => {
+        if(!doc.exists) return;
+        const d = doc.data();
+        editingCertId.value = id;
+        document.getElementById('certificateId').value = id;
+        document.getElementById('examination').value = d.examination||'SSC';
+        document.getElementById('year').value = d.year||'';
+        document.getElementById('board').value = d.board||'';
+        const i = d.studentInfo||{};
+        document.getElementById('studentName').value = i.name||'';
+        document.getElementById('rollNo').value = i.rollNo||'';
+        document.getElementById('registrationNo').value = i.registrationNo||'';
+        document.getElementById('fatherName').value = i.fatherName||'';
+        document.getElementById('motherName').value = i.motherName||'';
+        document.getElementById('dateOfBirth').value = i.dateOfBirth||'';
+        document.getElementById('gender').value = i.gender||'Male';
+        document.getElementById('gpa').value = i.gpa||'';
+        document.getElementById('group').value = i.group||'SCIENCE';
+        document.getElementById('session').value = i.session||'';
+        document.getElementById('type').value = i.type||'REGULAR';
+        document.getElementById('institute').value = i.institute||'';
+        populateSubjects('subjectsContainer', d.subjects, 'subject');
+        populateSubjects('continuousSubjectsContainer', d.continuousAssessment, 'contSubject');
         cancelEditBtn.style.display = 'inline-flex';
         saveCertBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Update Certificate';
         successPanel.style.display = 'none';
-        
-        // Scroll to form
-        document.getElementById('certificateForm').scrollIntoView({ behavior: 'smooth' });
-      }).catch(err => alert("Edit load error: " + err.message));
+      });
     }
 
-    // Delete certificate
-    function deleteCertificate(certId) {
-      if (!confirm(`Permanently delete certificate ${certId}? This cannot be undone.`)) return;
-      
-      db.collection("certificates").doc(certId).delete().then(() => {
-        alert("Certificate deleted successfully.");
-        // If currently editing this cert, reset form
-        if (document.getElementById('editingCertId').value === certId) {
-          resetForm();
-        }
-        loadSavedCertificates();
-        successPanel.style.display = 'none';
-      }).catch(err => alert("Delete error: " + err.message));
+    function deleteCertificate(id) {
+      if(!confirm('Delete certificate?')) return;
+      db.collection("certificates").doc(id).delete().then(() => { loadSavedCertificates(); if(editingCertId.value===id) resetForm(); });
     }
 
-    // Form submit (create or update)
     document.getElementById('certificateForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const user = auth.currentUser;
-      if(!user) { alert('Please login first'); return; }
-
-      const editingId = document.getElementById('editingCertId').value;
-      let certificateId = document.getElementById('certificateId').value.trim();
-      
-      if (!certificateId) {
-        certificateId = editingId || generateCertId();
-      }
-
-      const coreSubjects = collectSubjects('subjectsContainer', 'subjectCode[]', 'subjectName[]', 'subjectGrade[]');
-      const contSubjects = collectSubjects('continuousSubjectsContainer', 'contSubjectCode[]', 'contSubjectName[]', 'contSubjectGrade[]');
-
-      const certificateData = {
-        certificateId,
+      if(!auth.currentUser) return;
+      const editingId = editingCertId.value;
+      let certId = document.getElementById('certificateId').value.trim() || editingId || generateCertId();
+      const data = {
+        certificateId: certId,
         examination: document.getElementById('examination').value,
         year: document.getElementById('year').value,
         board: document.getElementById('board').value,
@@ -851,38 +814,22 @@
           group: document.getElementById('group').value,
           type: document.getElementById('type').value,
           session: document.getElementById('session').value,
-          gpa: parseFloat(document.getElementById('gpa').value) || 0,
+          gpa: parseFloat(document.getElementById('gpa').value)||0,
           institute: document.getElementById('institute').value
         },
-        subjects: coreSubjects,
-        continuousAssessment: contSubjects,
+        subjects: collectSubjects('subjectsContainer','subjectCode[]','subjectName[]','subjectGrade[]'),
+        continuousAssessment: collectSubjects('continuousSubjectsContainer','contSubjectCode[]','contSubjectName[]','contSubjectGrade[]'),
         verified: true,
         updatedAt: new Date().toISOString(),
-        createdBy: user.email
+        createdBy: auth.currentUser.email
       };
-
-      // If new record, add createdAt
-      if (!editingId) {
-        certificateData.createdAt = new Date().toISOString();
-      }
-
-      const docRef = db.collection("certificates").doc(certificateId);
-      
-      docRef.set(certificateData, { merge: true })
-        .then(() => {
-          displayQRCode(certificateId);
-          if (editingId) {
-            alert("Certificate updated successfully.");
-          }
-          // Reset editing state but keep QR visible
-          document.getElementById('editingCertId').value = '';
-          cancelEditBtn.style.display = 'none';
-          saveCertBtn.innerHTML = '<i class="fas fa-save"></i> Save Certificate & Generate QR';
-          loadSavedCertificates();
-        })
-        .catch(error => {
-          alert("Error: " + error.message);
-        });
+      if(!editingId) data.createdAt = new Date().toISOString();
+      db.collection("certificates").doc(certId).set(data,{merge:true}).then(() => {
+        displayQRCode(certId);
+        editingCertId.value = ''; cancelEditBtn.style.display='none';
+        saveCertBtn.innerHTML = '<i class="fas fa-save"></i> Save Certificate & Generate QR';
+        loadSavedCertificates();
+      }).catch(err => alert(err.message));
     });
 
     ensureSubjectRows();
