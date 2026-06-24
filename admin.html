@@ -785,7 +785,7 @@
       const url = `https://wwweducationboardresults-gov-bd.github.io/v2/?cert=${certId}`;
       verifyLinkInput.value = url;
       certIdDisplay.textContent = `ID: ${certId}`;
-      currentQRCode = new QRCode(qrContainer, { text: url, width: 140, height: 140, colorDark:"#0b4b2b", colorLight:"#ffffff" });
+      currentQRCode = new QRCode(qrContainer, { text: url, width: 140, height: 140, colorDark:"black", colorLight:"#ffffff" });
       lastGeneratedCertId = certId;
       successPanel.style.display = 'block';
     }
