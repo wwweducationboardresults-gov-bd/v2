@@ -281,19 +281,17 @@
                                                 <div class="form-group col-md-7 vcenter">
                                                     <label for="captcha">Robot Prevention Technique (CAPTCHA) &nbsp; 
                                                         <img id="captcha_img" src="" alt="Loading CAPTCHA...">&nbsp;
-                                                        <button id="captcha_reload" type="button" class="btn btn-md btn-danger"> 
+                                                        <button id="captcha_reload" type="button" class="btn btn-md btn-danger" style="margin-left: -0.5px;"> 
                                                             <span class="glyphicon glyphicon-refresh"></span>&nbsp;Click to load another image
                                                         </button>
                                                     </label>
                                                 </div>
-                                                <div class="form-group col-md-5 vcenter">
-                                                    <input class="form-control" type="text" name="captcha" value="" 
-                                                           placeholder="Type the digits visible on the image" 
-                                                           id="captcha" required="" autocomplete="off" maxlength="10">
-                                                    <div id="captcha_status" class="captcha-status"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                <div class="form-group vcenter" style="width: 200px; margin-left: 14.5px;">
+    <input class="form-control" type="text" name="captcha" value="" 
+           placeholder="Type the digits visible on the image" 
+           id="captcha" required="" autocomplete="off" maxlength="10">
+    <div id="captcha_status" class="captcha-status"></div>
+</div>
                                         
                                         <div class="row" id="col_5">
                                             <div id="row_submit">
